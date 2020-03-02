@@ -2,10 +2,13 @@
 # coding: utf-8
 
 import tkinter
+from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
+
+from data import csvtools
 
 
 class PlotFrame(tkinter.Frame):
@@ -24,12 +27,12 @@ class PlotFrame(tkinter.Frame):
         list_frame.pack(side=tkinter.LEFT, fill=tkinter.Y, padx=10, pady=10)
 
         plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
-        plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10)
+        plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         # button
-        load_button = Button(action_frame, text="Load data").grid(row=1, column=2, padx=5, pady=5)
-        clear_button = Button(action_frame, text="Clear data").grid(row=1, column=1, padx=5, pady=5)
-        add_button = Button(action_frame, text="Add plot").grid(row=1, column=5, padx=5, pady=5)
+        load_button = Button(action_frame, text="Load data", command=self.load_data).grid(row=1, column=2, padx=5, pady=5)
+        clear_button = Button(action_frame, text="Clear data", command=self.clear_data).grid(row=1, column=1, padx=5, pady=5)
+        add_button = Button(action_frame, text="Add plot", command=self.add_plot).grid(row=1, column=5, padx=5, pady=5)
 
         remove_button = Button(list_frame, text="Remove plot")
 
@@ -56,3 +59,20 @@ class PlotFrame(tkinter.Frame):
         canvas = FigureCanvasTkAgg(figure, master=plot_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+
+        toolbar = NavigationToolbar2Tk(canvas, plot_frame)
+        toolbar.update()
+        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+
+    def load_data(self):
+        filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
+        if filename is not None and len(filename) > 0:
+            reader = csvtools.read_csv_file(filename)
+            for row in reader:
+                print(row)
+
+    def clear_data(self):
+        pass
+
+    def add_plot(self):
+        pass

@@ -4,7 +4,7 @@
 import tkinter
 from tkinter.ttk import Notebook
 
-from gui.PlotFrame import PlotFrame
+from gui.plot import PlotFrame
 
 
 class MainFrame(tkinter.Tk):

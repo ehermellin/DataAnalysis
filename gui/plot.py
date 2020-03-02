@@ -9,6 +9,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.figure import Figure
 
 from data import csvtools
+from data.csvtools import CsvTools
 
 
 class PlotFrame(tkinter.Frame):
@@ -16,6 +17,11 @@ class PlotFrame(tkinter.Frame):
     def __init__(self, parent, **kw):
         super().__init__(**kw)
         self.__parent = parent
+        self.__data = None
+        self.__data_list = ()
+        self.__variable1_combo = None
+        self.__variable2_combo = None
+        self.__csv_tools = CsvTools()
         self.initialize()
 
     def initialize(self):
@@ -30,23 +36,28 @@ class PlotFrame(tkinter.Frame):
         plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         # button
-        load_button = Button(action_frame, text="Load data", command=self.load_data).grid(row=1, column=2, padx=5, pady=5)
-        clear_button = Button(action_frame, text="Clear data", command=self.clear_data).grid(row=1, column=1, padx=5, pady=5)
-        add_button = Button(action_frame, text="Add plot", command=self.add_plot).grid(row=1, column=5, padx=5, pady=5)
-
+        load_button = Button(action_frame, text="Load data", command=self.load_data)
+        load_button.grid(row=1, column=2, padx=5, pady=5)
+        clear_button = Button(action_frame, text="Clear data", command=self.clear_data)
+        clear_button.grid(row=1, column=1, padx=5, pady=5)
+        add_button = Button(action_frame, text="Add plot", command=self.add_plot)
+        add_button.grid(row=1, column=5, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot")
 
         # list
         plot_list = tkinter.Listbox(list_frame)
 
         # combo
-        data_list = ('Pomme', 'Poire', 'Banane')
         data_select_combo1 = tkinter.StringVar()
-        variable1_combo = Combobox(action_frame, textvariable=data_select_combo1, values=data_list, state='readonly')\
-            .grid(row=1, column=3, padx=5, pady=5)
+        self.__variable1_combo = Combobox(action_frame, textvariable=data_select_combo1, values=self.__data_list,
+                                          state='readonly',
+                                          postcommand=lambda: self.__variable1_combo.configure(values=self.__data_list))
+        self.__variable1_combo.grid(row=1, column=3, padx=5, pady=5)
         data_select_combo2 = tkinter.StringVar()
-        variable2_combo = Combobox(action_frame, textvariable=data_select_combo2, values=data_list, state='readonly')\
-            .grid(row=1, column=4, padx=5, pady=5)
+        self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2, values=self.__data_list,
+                                          state='readonly',
+                                          postcommand=lambda: self.__variable2_combo.configure(values=self.__data_list))
+        self.__variable2_combo.grid(row=1, column=4, padx=5, pady=5)
 
         # pack
         plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
@@ -67,12 +78,20 @@ class PlotFrame(tkinter.Frame):
     def load_data(self):
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
         if filename is not None and len(filename) > 0:
-            reader = csvtools.read_csv_file(filename)
-            for row in reader:
-                print(row)
+            self.__data = self.__csv_tools.read_csv_file(filename)
+            self.__data_list = csvtools.get_csv_field_names(self.__data)
 
     def clear_data(self):
-        pass
+        self.__data = None
+        self.__data_list = ()
+        self.__variable1_combo.set('')
+        self.__variable2_combo.set('')
+        self.__csv_tools.close_file()
+        self.__csv_tools.reset_file()
 
     def add_plot(self):
+        if self.__data is not None:
+            print(self.__variable1_combo.get())
+            print(self.__variable2_combo.get())
+            print(csvtools.get_data_from_field_names(self.__data, self.__data_list[0]))
         pass

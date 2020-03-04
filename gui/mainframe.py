@@ -4,12 +4,12 @@
 import tkinter
 from tkinter.ttk import Notebook
 
-from gui.plot import PlotFrame
+from gui.plotframe import PlotFrame
 
 
 class MainFrame(tkinter.Tk):
     def __init__(self,parent):
-        tkinter.Tk.__init__(self,parent)
+        tkinter.Tk.__init__(self, parent)
         self.__parent = parent
         self.__notebook = Notebook(self)
         self.__counter = 0

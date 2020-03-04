@@ -4,7 +4,14 @@
 import csv
 
 
-class Reader:
+def copy_and_adapt_data(data):
+    data_temp = data.copy()
+    data_temp.remove(data_temp[0])
+    data_temp = [sub.replace(',', '.') for sub in data_temp]
+    return list(map(float, data_temp))
+
+
+class DataManager:
 
     def __init__(self):
         self.__fieldnames = []
@@ -29,9 +36,13 @@ class Reader:
     def get_field_names(self):
         return self.__fieldnames
 
-    def get_data_from_field_name(self, field_name):
-        return self.__data[field_name]
+    def get_unit_from_field_name(self, field_name):
+        return self.__data[field_name][0]
 
-    def reset_reader(self):
+    def get_data_from_field_name(self, field_name):
+        data = copy_and_adapt_data(self.__data[field_name])
+        return data
+
+    def reset_manager(self):
         self.__fieldnames = ()
         self.__data = {}

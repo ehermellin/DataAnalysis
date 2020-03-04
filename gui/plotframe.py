@@ -8,7 +8,8 @@ from tkinter.ttk import Combobox, Button, Entry
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
-from data.reader import Reader
+from data.manager import DataManager
+from plot.plotfactory import PlotFactory
 
 
 class PlotFrame(tkinter.Frame):
@@ -20,7 +21,10 @@ class PlotFrame(tkinter.Frame):
         self.__entree = None
         self.__variable1_combo = None
         self.__variable2_combo = None
-        self.__data_reader = Reader()
+        self.__plot_list = None
+        self.__data_manager = DataManager()
+        self.__canvas = None
+        self.__plot = None
         self.initialize()
 
     def initialize(self):
@@ -41,65 +45,78 @@ class PlotFrame(tkinter.Frame):
         clear_button.grid(row=1, column=1, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot)
         add_button.grid(row=1, column=6, padx=5, pady=5)
-        remove_button = Button(list_frame, text="Remove plot")
+        remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
 
         # input
         self.__entree = Entry(action_frame, width=5)
         self.__entree.grid(row=1, column=2, padx=5, pady=5)
 
         # list
-        plot_list = tkinter.Listbox(list_frame)
+        self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE)
+        self.__plot_list.bind('<<ListboxSelect>>', self.on_list_select)
 
         # combo
         data_select_combo1 = tkinter.StringVar()
         self.__variable1_combo = Combobox(action_frame, textvariable=data_select_combo1, values=self.__data_field_names,
                                           state='readonly',
-                                          postcommand=lambda: self.__variable1_combo.configure(values=self.__data_field_names))
+                                          postcommand=lambda: self.__variable1_combo.configure(values=
+                                                                                               self.__data_field_names))
         self.__variable1_combo.grid(row=1, column=4, padx=5, pady=5)
         data_select_combo2 = tkinter.StringVar()
         self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2, values=self.__data_field_names,
                                           state='readonly',
-                                          postcommand=lambda: self.__variable2_combo.configure(values=self.__data_field_names))
+                                          postcommand=lambda: self.__variable2_combo.configure(values=
+                                                                                               self.__data_field_names))
         self.__variable2_combo.grid(row=1, column=5, padx=5, pady=5)
 
         # pack
-        plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
+        self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
         remove_button.pack(padx=10, pady=10)
 
         # plot
-        figure = Figure(figsize=(5, 5), dpi=100)
-        figure.add_subplot(111)
+        figure = Figure(figsize=(5, 5))
+        self.__plot = figure.add_subplot(111)
 
-        canvas = FigureCanvasTkAgg(figure, master=plot_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        self.__canvas = FigureCanvasTkAgg(figure, master=plot_frame)
+        self.__canvas.draw()
+        self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        toolbar = NavigationToolbar2Tk(canvas, plot_frame)
+        toolbar = NavigationToolbar2Tk(self.__canvas, plot_frame)
         toolbar.update()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     def load_data(self):
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
         if filename is not None and len(filename) > 0:
-            self.__data_reader.read_csv_file(filename, self.__entree.get())
-            self.__data_field_names = self.__data_reader.get_field_names()
+            self.__data_manager.read_csv_file(filename, self.__entree.get())
+            self.__data_field_names = self.__data_manager.get_field_names()
 
     def clear_data(self):
         self.__variable1_combo.set('')
         self.__variable2_combo.set('')
-        self.__data_reader.reset_reader()
+        self.__data_field_names = []
+        self.__data_manager.reset_manager()
 
     def add_plot(self):
-        print(self.__variable1_combo.get())
-        print(self.__variable2_combo.get())
-        print(self.__data_field_names[0])
-        print(self.__data_field_names[1])
-        print(self.__data_field_names[2])
-        print(self.__data_field_names[3])
+        if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
+            plot_f = PlotFactory.get_instance()
+            plot = plot_f.plot_from_data(self.__data_manager.get_data_from_field_name(self.__variable1_combo.get()),
+                                         self.__data_manager.get_data_from_field_name(self.__variable2_combo.get()),
+                                         self.__variable1_combo.get(), self.__variable2_combo.get())
 
-        print(self.__data_reader.get_data_from_field_name(self.__data_field_names[0]))
-        print(self.__data_reader.get_data_from_field_name(self.__data_field_names[1]))
-        print(self.__data_reader.get_data_from_field_name(self.__data_field_names[2]))
-        print(self.__data_reader.get_data_from_field_name(self.__data_field_names[3]))
+            self.__plot_list.insert(tkinter.END, plot)
 
-        pass
+    def remove_plot(self):
+        if self.__plot_list.size() > 0:
+            idxs = self.__plot_list.curselection()
+            for idx in idxs:
+                self.__plot_list.delete(idx)
+
+    def on_list_select(self, evt):
+        plot_f = PlotFactory.get_instance()
+        w = evt.widget
+        for idx in w.curselection():
+            plot_f.matplotlib_from_plot(self.__plot, w.get(idx), {})
+        print('You selected items: %s' % [w.get(int(i)) for i in w.curselection()])
+
+        self.__canvas.draw()

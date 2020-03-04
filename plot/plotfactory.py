@@ -29,11 +29,11 @@ class PlotFactory:
         self.__counter += 1
         return plot
 
-    def matplotlib_from_plot(self, ax, plot_id, param_dict):
-        pattern = re.search('id=(.+?) ', plot_id)
-        if pattern:
-            found = int(pattern.group(1))
-            print(found)
-            plot = self.__plot_list[found]
-            print(plot)
-            ax.plot(plot.get_x(), plot.get_y(), **param_dict)
+    def matplotlib_from_plot(self, ax, plot_ids, param_dict):
+        ax.clear()
+        for plot_id in plot_ids:
+            pattern = re.search('id=(.+?) ', plot_id)
+            if pattern:
+                found = int(pattern.group(1))
+                plot = self.__plot_list[found]
+                ax.plot(plot.get_x(), plot.get_y(), **param_dict)

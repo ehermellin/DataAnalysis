@@ -3,7 +3,7 @@
 
 import tkinter
 from tkinter.filedialog import askopenfilename
-from tkinter.ttk import Combobox, Button, Entry
+from tkinter.ttk import Combobox, Button, Checkbutton
 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
@@ -40,16 +40,10 @@ class PlotFrame(tkinter.Frame):
 
         # button
         load_button = Button(action_frame, text="Load data", command=self.load_data)
-        load_button.grid(row=1, column=3, padx=5, pady=5)
-        clear_button = Button(action_frame, text="Clear data", command=self.clear_data)
-        clear_button.grid(row=1, column=1, padx=5, pady=5)
+        load_button.grid(row=1, column=1, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot)
         add_button.grid(row=1, column=6, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
-
-        # input
-        self.__entree = Entry(action_frame, width=5)
-        self.__entree.grid(row=1, column=2, padx=5, pady=5)
 
         # list
         self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE)
@@ -86,16 +80,14 @@ class PlotFrame(tkinter.Frame):
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     def load_data(self):
+        self.__variable1_combo.set('')
+        self.__variable2_combo.set('')
+        self.__data_field_names = []
+        self.__data_manager = DataManager()
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
         if filename is not None and len(filename) > 0:
             self.__data_manager.read_csv_file(filename, self.__entree.get())
             self.__data_field_names = self.__data_manager.get_field_names()
-
-    def clear_data(self):
-        self.__variable1_combo.set('')
-        self.__variable2_combo.set('')
-        self.__data_field_names = []
-        self.__data_manager.reset_manager()
 
     def add_plot(self):
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
@@ -107,6 +99,10 @@ class PlotFrame(tkinter.Frame):
             self.__plot_list.insert(tkinter.END, plot)
 
     def remove_plot(self):
+        input_dialog = InputDialog(self)
+        self.wait_window(inputDialog.top)
+        print('Username: ', inputDialog.username)
+
         if self.__plot_list.size() > 0:
             idxs = self.__plot_list.curselection()
             for idx in idxs:
@@ -114,9 +110,30 @@ class PlotFrame(tkinter.Frame):
 
     def on_list_select(self, evt):
         plot_f = PlotFactory.get_instance()
-        w = evt.widget
-        for idx in w.curselection():
-            plot_f.matplotlib_from_plot(self.__plot, w.get(idx), {})
-        print('You selected items: %s' % [w.get(int(i)) for i in w.curselection()])
-
+        plot_ids = []
+        widget_list = evt.widget
+        for idx in widget_list.curselection():
+            plot_ids.append(widget_list.get(idx))
+        plot_f.matplotlib_from_plot(self.__plot, plot_ids, {})
         self.__canvas.draw()
+
+
+class InputDialog:
+
+    def __init__(self, parent):
+        top = self.top = tkinter.Toplevel(parent)
+        self.myLabel = tkinter.Label(top, text='Enter the delimiter of the csv file:')
+        self.myLabel.pack()
+        self.myEntryBox = tkinter.Entry(top)
+        self.myEntryBox.pack()
+        self.check_button = Checkbutton(top, text="Unit in the csv file?")
+        self.check_button.pack()
+        self.mySubmitButton = tkinter.Button(top, text='Submit', command=self.send)
+        self.mySubmitButton.pack()
+
+    def send(self):
+        #input = {}
+        #input['delimiter'] =
+        #input['unit'] =
+        self.username = self.myEntryBox.get()
+        self.top.destroy()

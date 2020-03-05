@@ -1,17 +1,20 @@
 #!/usr/bin/python
 # coding: utf-8
-
+import logging
 import tkinter
 from tkinter.ttk import Notebook
 
+from gui.loggerframe import LoggerFrame
 from gui.plotframe import PlotFrame
+from log.handler import logger
 
 
 class MainFrame(tkinter.Tk):
-    def __init__(self,parent):
+    def __init__(self, parent):
         tkinter.Tk.__init__(self, parent)
         self.__parent = parent
         self.__notebook = Notebook(self)
+        self.__logger_frame = None
         self.__counter = 0
         self.initialize()
 
@@ -43,12 +46,18 @@ class MainFrame(tkinter.Tk):
         self.__counter += 1
         tab = PlotFrame(self)
         self.__notebook.add(tab, text="Plot frame " + str(self.__counter))
+        logger.log(logging.INFO, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):
         self.__notebook.forget(self.__notebook.select())
+        logger.log(logging.INFO, "[MainFrame] Remove tab")
 
     def logger(self):
-        pass
+        logger.log(logging.INFO, "[MainFrame] Open Logger frame")
+        if self.__logger_frame is not None:
+            self.__logger_frame.quit()
+        self.__logger_frame = None
+        self.__logger_frame = LoggerFrame(self)
 
     def how_to_command(self):
         pass

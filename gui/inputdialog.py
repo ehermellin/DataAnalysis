@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # coding: utf-8
 
+import logging
 import tkinter
 from tkinter.ttk import Label, Entry, Checkbutton, Button
+
+from log.handler import logger
 
 
 class InputDialog:
@@ -28,6 +31,7 @@ class InputDialog:
             self.__input_options['delimiter'] = self.__entry_box.get()
         self.__input_options['unit'] = self.__checkbox_var.get()
         self.top.destroy()
+        logger.log(logging.INFO, "[Input dialog] " + str(self.__input_options))
 
     def get_input_options(self):
         return self.__input_options

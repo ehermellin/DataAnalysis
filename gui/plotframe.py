@@ -1,15 +1,16 @@
 #!/usr/bin/python
 # coding: utf-8
-
+import logging
 import tkinter
 from tkinter.filedialog import askopenfilename
-from tkinter.ttk import Combobox, Button, Checkbutton
+from tkinter.ttk import Combobox, Button
 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
 from data.manager import DataManager
 from gui.inputdialog import InputDialog
+from log.handler import logger
 from plot.plotfactory import PlotFactory
 
 
@@ -90,8 +91,11 @@ class PlotFrame(tkinter.Frame):
         self.wait_window(input_dialog.top)
 
         if filename is not None and len(filename) > 0:
+            logger.log(logging.INFO, "[PlotFrame] Open file:" + str(filename))
             self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
             self.__data_field_names = self.__data_manager.get_field_names()
+        else:
+            logger.log(logging.ERROR, "[PlotFrame] No file selected")
 
     def add_plot(self):
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
@@ -99,14 +103,19 @@ class PlotFrame(tkinter.Frame):
             plot = plot_f.plot_from_data(self.__data_manager.get_data_from_field_name(self.__variable1_combo.get()),
                                          self.__data_manager.get_data_from_field_name(self.__variable2_combo.get()),
                                          self.__variable1_combo.get(), self.__variable2_combo.get())
-
+            logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot))
             self.__plot_list.insert(tkinter.END, plot)
+        else:
+            logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
     def remove_plot(self):
         if self.__plot_list.size() > 0:
+            logger.log(logging.INFO, "[PlotFrame] Remove plot")
             idxs = self.__plot_list.curselection()
             for idx in idxs:
                 self.__plot_list.delete(idx)
+        else:
+            logger.log(logging.ERROR, "[PlotFrame] No plot to remove")
 
     def on_list_select(self, evt):
         plot_f = PlotFactory.get_instance()

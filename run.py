@@ -1,9 +1,13 @@
 #!/usr/bin/python
 # coding: utf-8
 
-from gui.mainframe import MainFrame
+import logging
 
+from gui.mainframe import MainFrame
+from log.handler import logger
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    logger.log(logging.INFO, "[Main] Starting RAnalysis")
     app = MainFrame(None)
     app.mainloop()

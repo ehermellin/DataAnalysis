@@ -2,6 +2,9 @@
 # coding: utf-8
 
 import csv
+import logging
+
+from log.handler import logger
 
 
 class DataManager:
@@ -13,6 +16,7 @@ class DataManager:
 
     def read_csv_file(self, filename, options):
         self.__unit_in_data = options['unit']
+        logger.log(logging.INFO, "[DataManager] " + filename + " " + str(options))
         with open(filename, 'rU') as infile:
             # read the file as a dictionary for each row ({header : value})
             reader = csv.DictReader(infile, delimiter=options['delimiter'])
@@ -23,6 +27,7 @@ class DataManager:
                         if header not in self.__fieldnames:
                             self.__fieldnames.append(header)
                     except KeyError:
+                        logger.log(logging.ERROR, "[DataManager] Key error:" + header + " " + value)
                         self.__data[header] = [value]
 
     def get_field_names(self):

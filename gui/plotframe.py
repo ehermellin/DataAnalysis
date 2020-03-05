@@ -9,6 +9,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from matplotlib.figure import Figure
 
 from data.manager import DataManager
+from gui.inputdialog import InputDialog
 from plot.plotfactory import PlotFactory
 
 
@@ -18,7 +19,6 @@ class PlotFrame(tkinter.Frame):
         super().__init__(**kw)
         self.__parent = parent
         self.__data_field_names = []
-        self.__entree = None
         self.__variable1_combo = None
         self.__variable2_combo = None
         self.__plot_list = None
@@ -85,8 +85,12 @@ class PlotFrame(tkinter.Frame):
         self.__data_field_names = []
         self.__data_manager = DataManager()
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
+
+        input_dialog = InputDialog(self)
+        self.wait_window(input_dialog.top)
+
         if filename is not None and len(filename) > 0:
-            self.__data_manager.read_csv_file(filename, self.__entree.get())
+            self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
             self.__data_field_names = self.__data_manager.get_field_names()
 
     def add_plot(self):
@@ -99,10 +103,6 @@ class PlotFrame(tkinter.Frame):
             self.__plot_list.insert(tkinter.END, plot)
 
     def remove_plot(self):
-        input_dialog = InputDialog(self)
-        self.wait_window(inputDialog.top)
-        print('Username: ', inputDialog.username)
-
         if self.__plot_list.size() > 0:
             idxs = self.__plot_list.curselection()
             for idx in idxs:
@@ -116,24 +116,3 @@ class PlotFrame(tkinter.Frame):
             plot_ids.append(widget_list.get(idx))
         plot_f.matplotlib_from_plot(self.__plot, plot_ids, {})
         self.__canvas.draw()
-
-
-class InputDialog:
-
-    def __init__(self, parent):
-        top = self.top = tkinter.Toplevel(parent)
-        self.myLabel = tkinter.Label(top, text='Enter the delimiter of the csv file:')
-        self.myLabel.pack()
-        self.myEntryBox = tkinter.Entry(top)
-        self.myEntryBox.pack()
-        self.check_button = Checkbutton(top, text="Unit in the csv file?")
-        self.check_button.pack()
-        self.mySubmitButton = tkinter.Button(top, text='Submit', command=self.send)
-        self.mySubmitButton.pack()
-
-    def send(self):
-        #input = {}
-        #input['delimiter'] =
-        #input['unit'] =
-        self.username = self.myEntryBox.get()
-        self.top.destroy()

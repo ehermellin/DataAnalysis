@@ -36,3 +36,12 @@ class Plot:
 
     def get_y_unit(self):
         return self.__y_unit
+
+    def print_plot(self):
+        print(self.__plot_id)
+        print(self.__x)
+        print(self.__y)
+        print(self.__x_axis)
+        print(self.__y_axis)
+        print(self.__x_unit)
+        print(self.__y_unit)

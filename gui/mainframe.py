@@ -30,6 +30,8 @@ class MainFrame(tkinter.Tk):
         frame_menu.add_cascade(label="Tabs", menu=options_menu)
 
         help_menu = tkinter.Menu(frame_menu, tearoff=0)
+        help_menu.add_command(label="Logger", command=self.logger)
+        help_menu.add_separator()
         help_menu.add_command(label="How to", command=self.how_to_command)
         help_menu.add_command(label="About", command=self.about_command)
         frame_menu.add_cascade(label="Help", menu=help_menu)
@@ -44,6 +46,9 @@ class MainFrame(tkinter.Tk):
 
     def remove_tab_command(self):
         self.__notebook.forget(self.__notebook.select())
+
+    def logger(self):
+        pass
 
     def how_to_command(self):
         pass

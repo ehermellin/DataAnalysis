@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # coding: utf-8
+
 import logging
 import tkinter
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button
 
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
+from matplotlib import style
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 from data.manager import DataManager
 from gui.inputdialog import InputDialog
@@ -23,10 +24,12 @@ class PlotFrame(tkinter.Frame):
         self.__data_field_names = []
         self.__variable1_combo = None
         self.__variable2_combo = None
+        self.__style_combo = None
         self.__plot_list = None
         self.__data_manager = DataManager()
         self.__canvas = None
         self.__plot = None
+        self.__plot_frame = None
         self.initialize()
 
     def initialize(self):
@@ -37,8 +40,8 @@ class PlotFrame(tkinter.Frame):
         list_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
         list_frame.pack(side=tkinter.LEFT, fill=tkinter.Y, padx=10, pady=10)
 
-        plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
-        plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
+        self.__plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
+        self.__plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         # button
         load_button = Button(action_frame, text="Load data", command=self.load_data)
@@ -46,7 +49,7 @@ class PlotFrame(tkinter.Frame):
         add_button = Button(action_frame, text="Add plot", command=self.add_plot)
         add_button.grid(row=1, column=6, padx=5, pady=5)
         customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot)
-        customize_button.grid(row=1, column=7, padx=5, pady=5)
+        customize_button.grid(row=1, column=8, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
 
         # list
@@ -66,20 +69,40 @@ class PlotFrame(tkinter.Frame):
                                           postcommand=lambda: self.__variable2_combo.configure(values=
                                                                                                self.__data_field_names))
         self.__variable2_combo.grid(row=1, column=5, padx=5, pady=5)
+        style_select_combo3 = tkinter.StringVar()
+        self.__style_combo = Combobox(action_frame, textvariable=style_select_combo3, values=style.available,
+                                      state='readonly')
+        self.__style_combo.grid(row=1, column=7, padx=5, pady=5)
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
         remove_button.pack(padx=10, pady=10)
 
         # plot
+        self.create_plot()
+
+    def create_plot(self, name_style='ggplot'):
+        if self.__canvas is not None:
+            self.__canvas.get_tk_widget().destroy()
+        if self.__plot_frame is not None:
+            self.__plot_frame.destroy()
+
+        self.__plot = None
+        self.__canvas = None
+        self.__plot_frame = None
+
+        self.__plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
+        self.__plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
+
+        style.use(name_style)
         figure = Figure(figsize=(5, 5))
         self.__plot = figure.add_subplot(111)
 
-        self.__canvas = FigureCanvasTkAgg(figure, master=plot_frame)
+        self.__canvas = FigureCanvasTkAgg(figure, master=self.__plot_frame)
         self.__canvas.draw()
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        toolbar = NavigationToolbar2Tk(self.__canvas, plot_frame)
+        toolbar = NavigationToolbar2Tk(self.__canvas, self.__plot_frame)
         toolbar.update()
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
@@ -115,7 +138,9 @@ class PlotFrame(tkinter.Frame):
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
     def customize_plot(self):
-        pass
+        if self.__style_combo.get() != "":
+            logger.log(logging.ERROR, "[PlotFrame] Style: " + self.__style_combo.get())
+            self.create_plot(self.__style_combo.get())
 
     def remove_plot(self):
         if self.__plot_list.size() > 0:

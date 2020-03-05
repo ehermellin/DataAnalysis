@@ -5,6 +5,7 @@ import tkinter
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button
 
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
@@ -44,6 +45,8 @@ class PlotFrame(tkinter.Frame):
         load_button.grid(row=1, column=1, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot)
         add_button.grid(row=1, column=6, padx=5, pady=5)
+        customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot)
+        customize_button.grid(row=1, column=7, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
 
         # list
@@ -102,11 +105,17 @@ class PlotFrame(tkinter.Frame):
             plot_f = PlotFactory.get_instance()
             plot = plot_f.plot_from_data(self.__data_manager.get_data_from_field_name(self.__variable1_combo.get()),
                                          self.__data_manager.get_data_from_field_name(self.__variable2_combo.get()),
-                                         self.__variable1_combo.get(), self.__variable2_combo.get())
+                                         self.__variable1_combo.get(), self.__variable2_combo.get(),
+                                         self.__data_manager.get_unit_from_field_name(self.__variable1_combo.get()),
+                                         self.__data_manager.get_unit_from_field_name(self.__variable2_combo.get()))
             logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot))
             self.__plot_list.insert(tkinter.END, plot)
+            self.__variable1_combo["state"] = 'disabled'
         else:
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
+
+    def customize_plot(self):
+        pass
 
     def remove_plot(self):
         if self.__plot_list.size() > 0:
@@ -117,11 +126,15 @@ class PlotFrame(tkinter.Frame):
         else:
             logger.log(logging.ERROR, "[PlotFrame] No plot to remove")
 
+        if self.__plot_list.size() == 0:
+            self.__variable1_combo["state"] = 'readonly'
+
     def on_list_select(self, evt):
         plot_f = PlotFactory.get_instance()
         plot_ids = []
         widget_list = evt.widget
         for idx in widget_list.curselection():
             plot_ids.append(widget_list.get(idx))
-        plot_f.matplotlib_from_plot(self.__plot, plot_ids, {})
-        self.__canvas.draw()
+        if len(plot_ids) > 0:
+            plot_f.matplotlib_from_plot(self.__plot, plot_ids, {})
+            self.__canvas.draw()

@@ -13,6 +13,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from data.manager import DataManager
 from gui.inputdialog import InputDialog
 from log.handler import logger
+from plot.matplotlibfactory import MatplotlibFactory
 from plot.plotfactory import PlotFactory
 
 
@@ -123,16 +124,13 @@ class PlotFrame(tkinter.Frame):
         else:
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
 
-    def add_plot(self):
+    def add_plot(self):  # TODO factory with one plot
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
             plot_f = PlotFactory.get_instance()
-            plot = plot_f.plot_from_data(self.__data_manager.get_data_from_field_name(self.__variable1_combo.get()),
-                                         self.__data_manager.get_data_from_field_name(self.__variable2_combo.get()),
-                                         self.__variable1_combo.get(), self.__variable2_combo.get(),
-                                         self.__data_manager.get_unit_from_field_name(self.__variable1_combo.get()),
-                                         self.__data_manager.get_unit_from_field_name(self.__variable2_combo.get()))
-            logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot))
-            self.__plot_list.insert(tkinter.END, plot)
+            plot = plot_f.plot_factory(self.__data_manager, self.__variable1_combo.get(),
+                                       [self.__variable2_combo.get()])
+            logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot[0]))
+            self.__plot_list.insert(tkinter.END, plot[0])
             self.__variable1_combo["state"] = 'disabled'
         else:
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
@@ -155,11 +153,16 @@ class PlotFrame(tkinter.Frame):
             self.__variable1_combo["state"] = 'readonly'
 
     def on_list_select(self, evt):
-        plot_f = PlotFactory.get_instance()
+        matplot_f = MatplotlibFactory.get_instance()
         plot_ids = []
         widget_list = evt.widget
         for idx in widget_list.curselection():
             plot_ids.append(widget_list.get(idx))
+
         if len(plot_ids) > 0:
-            plot_f.matplotlib_from_plot(self.__plot, plot_ids, {})
+            matplot_f.matplotlib_factory(self.__plot, PlotFactory.get_instance().get_plots_dict(), plot_ids)
             self.__canvas.draw()
+        else:
+            matplot_f.clear(self.__plot)
+            self.__canvas.draw()
+

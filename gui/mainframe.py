@@ -12,6 +12,8 @@ from log.handler import logger
 class MainFrame(tkinter.Tk):
     def __init__(self, parent):
         tkinter.Tk.__init__(self, parent)
+        logging.basicConfig(level=logging.INFO)
+        logger.log(logging.INFO, "[Main] Starting RAnalysis")
         self.__parent = parent
         self.__notebook = Notebook(self)
         self.__logger_frame = None

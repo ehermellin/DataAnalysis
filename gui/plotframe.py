@@ -13,8 +13,8 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from data.manager import DataManager
 from gui.inputdialog import InputDialog
 from log.handler import logger
-from plot.matplotlibfactory import MatplotlibFactory
-from plot.plotfactory import PlotFactory
+from plot.graph import graph_from_plot_ids, clear
+from plot.plotcreator import PlotCreator
 
 
 class PlotFrame(tkinter.Frame):
@@ -124,11 +124,11 @@ class PlotFrame(tkinter.Frame):
         else:
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
 
-    def add_plot(self):  # TODO factory with one plot
+    def add_plot(self):
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
-            plot_f = PlotFactory.get_instance()
-            plot = plot_f.plot_factory(self.__data_manager, self.__variable1_combo.get(),
-                                       [self.__variable2_combo.get()])
+            plot_f = PlotCreator.get_instance()
+            plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
+                                               [self.__variable2_combo.get()])
             logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot[0]))
             self.__plot_list.insert(tkinter.END, plot[0])
             self.__variable1_combo["state"] = 'disabled'
@@ -153,16 +153,14 @@ class PlotFrame(tkinter.Frame):
             self.__variable1_combo["state"] = 'readonly'
 
     def on_list_select(self, evt):
-        matplot_f = MatplotlibFactory.get_instance()
         plot_ids = []
         widget_list = evt.widget
         for idx in widget_list.curselection():
             plot_ids.append(widget_list.get(idx))
 
         if len(plot_ids) > 0:
-            matplot_f.matplotlib_factory(self.__plot, PlotFactory.get_instance().get_plots_dict(), plot_ids)
+            graph_from_plot_ids(self.__plot, plot_ids)
             self.__canvas.draw()
         else:
-            matplot_f.clear(self.__plot)
+            clear(self.__plot)
             self.__canvas.draw()
-

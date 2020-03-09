@@ -9,6 +9,7 @@ from gui.mainframe import MainFrame
 from log.loghandler import logger
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument('-gui', action='store_true',
                         help='run ranalysis with gui')

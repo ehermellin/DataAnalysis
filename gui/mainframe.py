@@ -6,7 +6,7 @@ from tkinter.ttk import Notebook
 
 from gui.loggerframe import LoggerFrame
 from gui.plotframe import PlotFrame
-from log.handler import logger
+from log.loghandler import logger
 
 
 class MainFrame(tkinter.Tk):

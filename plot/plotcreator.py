@@ -3,7 +3,7 @@
 
 import logging
 
-from log.handler import logger
+from log.loghandler import logger
 from plot.plot import Plot
 
 

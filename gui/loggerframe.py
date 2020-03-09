@@ -7,7 +7,7 @@ import tkinter
 from tkinter import N, S, W, E
 from tkinter.scrolledtext import ScrolledText
 
-from log.handler import QueueHandler, logger
+from log.loghandler import QueueHandler, logger
 
 
 class LoggerFrame:

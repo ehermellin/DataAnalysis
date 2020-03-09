@@ -5,7 +5,7 @@ import logging
 import tkinter
 from tkinter.ttk import Label, Entry, Checkbutton, Button
 
-from log.handler import logger
+from log.loghandler import logger
 
 
 class InputDialog:

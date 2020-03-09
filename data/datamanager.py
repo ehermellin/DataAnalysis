@@ -4,7 +4,7 @@
 import csv
 import logging
 
-from log.handler import logger
+from log.loghandler import logger
 
 
 class DataManager:

@@ -10,9 +10,9 @@ from matplotlib import style
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-from data.manager import DataManager
+from data.datamanager import DataManager
 from gui.inputdialog import InputDialog
-from log.handler import logger
+from log.loghandler import logger
 from plot.graph import graph_from_plot_ids, clear
 from plot.plotcreator import PlotCreator
 
@@ -29,8 +29,8 @@ class PlotFrame(tkinter.Frame):
         self.__plot_list = None
         self.__data_manager = DataManager()
         self.__canvas = None
-        self.__plot = None
-        self.__plot_frame = None
+        self.__graph = None
+        self.__graph_frame = None
         self.initialize()
 
     def initialize(self):
@@ -41,8 +41,8 @@ class PlotFrame(tkinter.Frame):
         list_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
         list_frame.pack(side=tkinter.LEFT, fill=tkinter.Y, padx=10, pady=10)
 
-        self.__plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
-        self.__plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
+        self.__graph_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
+        self.__graph_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         # button
         load_button = Button(action_frame, text="Load data", command=self.load_data)
@@ -85,25 +85,25 @@ class PlotFrame(tkinter.Frame):
     def create_plot(self, name_style='ggplot'):
         if self.__canvas is not None:
             self.__canvas.get_tk_widget().destroy()
-        if self.__plot_frame is not None:
-            self.__plot_frame.destroy()
+        if self.__graph_frame is not None:
+            self.__graph_frame.destroy()
 
-        self.__plot = None
+        self.__graph = None
         self.__canvas = None
-        self.__plot_frame = None
+        self.__graph_frame = None
 
-        self.__plot_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
-        self.__plot_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
+        self.__graph_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
+        self.__graph_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         style.use(name_style)
         figure = Figure(figsize=(5, 5))
-        self.__plot = figure.add_subplot(111)
+        self.__graph = figure.add_subplot(111)
 
-        self.__canvas = FigureCanvasTkAgg(figure, master=self.__plot_frame)
+        self.__canvas = FigureCanvasTkAgg(figure, master=self.__graph_frame)
         self.__canvas.draw()
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        toolbar = NavigationToolbar2Tk(self.__canvas, self.__plot_frame)
+        toolbar = NavigationToolbar2Tk(self.__canvas, self.__graph_frame)
         toolbar.update()
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
@@ -159,8 +159,8 @@ class PlotFrame(tkinter.Frame):
             plot_ids.append(widget_list.get(idx))
 
         if len(plot_ids) > 0:
-            graph_from_plot_ids(self.__plot, plot_ids)
+            graph_from_plot_ids(self.__graph, plot_ids)
             self.__canvas.draw()
         else:
-            clear(self.__plot)
+            clear(self.__graph)
             self.__canvas.draw()

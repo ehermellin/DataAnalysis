@@ -4,8 +4,14 @@
 import logging
 import re
 
-from log.handler import logger
+from log.loghandler import logger
 from plot.plotcreator import PlotCreator
+
+
+def graph_from_fieldname(ax, manager, x_fieldname, y_fieldname):
+    logger.log(logging.INFO, "[Graph] Graph from fieldname")
+    plots = [PlotCreator.get_instance().plot_from_fieldname(manager, x_fieldname, y_fieldname)]
+    plot(ax, plots)
 
 
 def graph_from_fieldnames(ax, manager, x_fieldname, y_fieldnames):

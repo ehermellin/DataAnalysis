@@ -1,5 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
+
+""" This file contains the MainFrame class extending tkinter.Tk """
+
 import logging
 import tkinter
 from tkinter.ttk import Notebook
@@ -10,6 +13,8 @@ from ranalysis.log.loghandler import logger
 
 
 class MainFrame(tkinter.Tk):
+    """ Main GUI window: Display menu and PlotFrame """
+
     def __init__(self, parent):
         tkinter.Tk.__init__(self, parent)
         self.__parent = parent

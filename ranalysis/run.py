@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
 
+""" This file is the entry point of the apps """
+
 import argparse
 import logging
 

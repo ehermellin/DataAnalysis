@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
 
+""" This file contains the PlotFrame class extending tkinter.Frame """
+
 import logging
 import tkinter
 from tkinter.filedialog import askopenfilename
@@ -18,6 +20,7 @@ from ranalysis.plot.plotcreator import PlotCreator
 
 
 class PlotFrame(tkinter.Frame):
+    """ Display buttons, list, combobox and matplotlib canvas """
 
     def __init__(self, parent, **kw):
         super().__init__(**kw)

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
 
+""" This file contains the LoggerFrame class """
+
 import logging
 import queue
 import tkinter
@@ -11,7 +13,7 @@ from ranalysis.log.loghandler import QueueHandler, logger
 
 
 class LoggerFrame:
-    """Poll messages from a logging queue and display them in a scrolled text widget"""
+    """ Poll messages from a logging queue and display them in a scrolled text widget """
 
     def __init__(self, parent):
         top = self.top = tkinter.Toplevel(parent)

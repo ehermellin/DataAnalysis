@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # coding: utf-8
 
+""" This file contains the InputDialog class """
+
 import logging
 import tkinter
 from tkinter.ttk import Label, Entry, Checkbutton, Button
@@ -9,6 +11,7 @@ from ranalysis.log.loghandler import logger
 
 
 class InputDialog:
+    """ Display input dialog for csv reading options """
 
     def __init__(self, parent):
         top = self.top = tkinter.Toplevel(parent)

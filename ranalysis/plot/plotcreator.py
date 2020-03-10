@@ -3,8 +3,8 @@
 
 import logging
 
-from log.loghandler import logger
-from plot.plot import Plot
+from ranalysis.log.loghandler import logger
+from ranalysis.plot.plot import Plot
 
 
 class PlotCreator:

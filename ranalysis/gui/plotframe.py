@@ -10,11 +10,11 @@ from matplotlib import style
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-from data.datamanager import DataManager
-from gui.inputdialog import InputDialog
-from log.loghandler import logger
-from plot.graph import graph_from_plot_ids, clear
-from plot.plotcreator import PlotCreator
+from ranalysis.data.datamanager import DataManager
+from ranalysis.gui.inputdialog import InputDialog
+from ranalysis.log.loghandler import logger
+from ranalysis.plot.graph import graph_from_plot_ids, clear
+from ranalysis.plot.plotcreator import PlotCreator
 
 
 class PlotFrame(tkinter.Frame):
@@ -137,7 +137,7 @@ class PlotFrame(tkinter.Frame):
 
     def customize_plot(self):
         if self.__style_combo.get() != "":
-            logger.log(logging.ERROR, "[PlotFrame] Style: " + self.__style_combo.get())
+            logger.log(logging.INFO, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
 
     def remove_plot(self):

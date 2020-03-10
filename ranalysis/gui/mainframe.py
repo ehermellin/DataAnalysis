@@ -4,9 +4,9 @@ import logging
 import tkinter
 from tkinter.ttk import Notebook
 
-from gui.loggerframe import LoggerFrame
-from gui.plotframe import PlotFrame
-from log.loghandler import logger
+from ranalysis.gui.loggerframe import LoggerFrame
+from ranalysis.gui.plotframe import PlotFrame
+from ranalysis.log.loghandler import logger
 
 
 class MainFrame(tkinter.Tk):

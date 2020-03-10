@@ -4,9 +4,9 @@
 import argparse
 import logging
 
-from cli.clihandler import CliHandler
-from gui.mainframe import MainFrame
-from log.loghandler import logger
+from ranalysis.cli.clihandler import CliHandler
+from ranalysis.gui.mainframe import MainFrame
+from ranalysis.log.loghandler import logger
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

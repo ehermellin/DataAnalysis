@@ -7,9 +7,9 @@ import queue
 import matplotlib.pyplot as plt
 from matplotlib import style
 
-from data.datamanager import DataManager
-from log.loghandler import logger, QueueHandler
-from plot.graph import graph_from_fieldname, graph_from_fieldnames
+from ranalysis.data.datamanager import DataManager
+from ranalysis.log.loghandler import logger, QueueHandler
+from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames
 
 
 class CliHandler:

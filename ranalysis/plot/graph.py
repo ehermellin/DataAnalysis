@@ -4,8 +4,8 @@
 import logging
 import re
 
-from log.loghandler import logger
-from plot.plotcreator import PlotCreator
+from ranalysis.log.loghandler import logger
+from ranalysis.plot.plotcreator import PlotCreator
 
 
 def graph_from_fieldname(ax, manager, x_fieldname, y_fieldname):

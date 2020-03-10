@@ -4,7 +4,7 @@
 import csv
 import logging
 
-from log.loghandler import logger
+from ranalysis.log.loghandler import logger
 
 
 class DataManager:

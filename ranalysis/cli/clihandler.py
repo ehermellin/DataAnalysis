@@ -36,14 +36,18 @@ class CliHandler:
             show plot from data field name (x-axis and multiple y-axis)
         """
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, options=None):
         """ CliHandler constructor
 
         Parameters
         ----------
         file_path : str
             the file path to the csv file
+        options : dict
+            the options to read the csv file
         """
+        if options is None:
+            options = {'delimiter': ';', 'unit': 1}
         self.log_queue = queue.Queue()
         self.queue_handler = QueueHandler(self.log_queue)
         self.queue_handler.setFormatter(logging.Formatter('%(asctime)s: %(message)s'))
@@ -53,7 +57,7 @@ class CliHandler:
         self.__file_path = file_path
         self.__data_manager = DataManager()
         if self.__file_path:
-            self.__data_manager.read_csv_file(file_path, {'delimiter': ';', 'unit': 1})
+            self.__data_manager.read_csv_file(file_path, options)
 
     def show_from_fieldname(self, x_fieldname, y_fieldname):
         """ Plot data from fieldname in a plt matplotlib object

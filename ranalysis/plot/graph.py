@@ -162,6 +162,9 @@ def plot(ax, plots_to_display):
 
     for plot_tm in plots_to_display:
         label = plot_tm.get_y_axis() + "[" + plot_tm.get_y_unit() + "]"
-        ax.plot(x_data, plot_tm.get_y(), label=label, alpha=0.50)
+        if len(x_data) == len(plot_tm.get_y()):
+            ax.plot(x_data, plot_tm.get_y(), label=label, alpha=0.50)
+        else:
+            logger.log(logging.ERROR, "[Graph] x and y data do not have the same size")
 
     ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.10), ncol=5, fancybox=True)

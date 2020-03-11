@@ -65,7 +65,7 @@ class DataManager:
                         if header not in self.__fieldnames:
                             self.__fieldnames.append(header)
                     except KeyError:
-                        logger.log(logging.ERROR, "[DataManager] Key error:" + header + " " + value)
+                        logger.log(logging.DEBUG, "[DataManager] Key error:" + header + " " + value)
                         self.__data[header] = [value]
 
     def get_field_names(self):
@@ -91,9 +91,13 @@ class DataManager:
         str
             the unit of data field name
         """
-        if self.__unit_in_data == 1:
-            return self.__data[field_name][0]
+        if field_name in self.__data:
+            if self.__unit_in_data == 1:
+                return self.__data[field_name][0]
+            else:
+                return ""
         else:
+            logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
             return ""
 
     def get_data_from_field_name(self, field_name):
@@ -109,7 +113,11 @@ class DataManager:
         list(float, int, ...)
             the data of data field name
         """
-        return self.__copy_and_adapt_data(self.__data[field_name])
+        if field_name in self.__data:
+            return self.__copy_and_adapt_data(self.__data[field_name])
+        else:
+            logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
+            return list()
 
     def reset_manager(self):
         """ Reset the data manager """
@@ -134,4 +142,9 @@ class DataManager:
         if self.__unit_in_data == 1:
             data_temp.remove(data_temp[0])
         data_temp = [sub.replace(',', '.') for sub in data_temp]
-        return list(map(float, data_temp))
+        try:
+            data_temp = list(map(float, data_temp))
+            return data_temp
+        except ValueError:
+            logger.log(logging.ERROR, "[DataManager] Error when converting data (string to number)")
+            return list()

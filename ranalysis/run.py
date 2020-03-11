@@ -23,6 +23,10 @@ if __name__ == "__main__":
                         help='the field name of the y data from csv file ( -y yname1 )')
     parser.add_argument('-my', action='store', type=str,
                         help='the field names of the y data from csv file ( -my yname1,yname2,yname3 ) ')
+    parser.add_argument('-d', action='store', type=str,
+                        help='the delimiter in the csv file ( -d ; )')
+    parser.add_argument('-u', action='store', type=str,
+                        help='unit after variable name in the csv file ( -u 0 ou -u 1 )')
     args = parser.parse_args()
 
     if args.gui:
@@ -34,7 +38,14 @@ if __name__ == "__main__":
         logger.log(logging.INFO, "-- Running RAnalysis CLI version")
         if args.f:
             if args.x:
-                cli_handler = CliHandler(args.f)
+                options = {'delimiter': ';', 'unit': 1}
+                if args.d:
+                    options['delimiter'] = args.d
+                if args.u:
+                    options['unit'] = args.u
+
+                cli_handler = CliHandler(args.f, options)
+
                 if args.y:
                     cli_handler.show_from_fieldname(args.x, args.y)
                 elif args.my:

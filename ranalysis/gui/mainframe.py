@@ -13,9 +13,31 @@ from ranalysis.log.loghandler import logger
 
 
 class MainFrame(tkinter.Tk):
-    """ Main GUI window: Display menu and PlotFrame """
+    """ Main GUI window: Display menu and PlotFrame
+
+    Attributes
+    ----------
+    parent : tkinter.Frame
+        the parent frame of the MainFrame
+
+    Methods
+    -------
+    initialize()
+        initialize all the tkinter objects of the frame
+    add_tab_command(self)
+        add_tab_command action of the menu creating new notebook tab
+    remove_tab_command(self)
+        remove_tab_command action of the menu removing selected notebook tab
+    logger(self)
+        display or hide the LoggerFrame
+    how_to_command(self)
+        how_to_command action of the menu displaying some "how to" questions
+    about_command(self)
+       about_command action of the menu displaying RAnalysis informations
+    """
 
     def __init__(self, parent):
+        """ MainFrame constructor """
         tkinter.Tk.__init__(self, parent)
         self.__parent = parent
         self.__notebook = Notebook(self)
@@ -24,6 +46,7 @@ class MainFrame(tkinter.Tk):
         self.initialize()
 
     def initialize(self):
+        """ Initialize all the tkinter objects of the frame """
         self.title('RGINE Data Analysis')
 
         # notebook
@@ -48,16 +71,19 @@ class MainFrame(tkinter.Tk):
         self.add_tab_command()
 
     def add_tab_command(self):
+        """ add_tab_command action of the menu creating new notebook tab """
         self.__counter += 1
         tab = PlotFrame(self)
         self.__notebook.add(tab, text="Plot frame " + str(self.__counter))
         logger.log(logging.INFO, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):
+        """ remove_tab_command action of the menu removing selected notebook tab """
         self.__notebook.forget(self.__notebook.select())
         logger.log(logging.INFO, "[MainFrame] Remove tab")
 
     def logger(self):
+        """ Display or hide the LoggerFrame """
         logger.log(logging.INFO, "[MainFrame] Open Logger frame")
         if self.__logger_frame is not None:
             self.__logger_frame.quit()
@@ -65,8 +91,10 @@ class MainFrame(tkinter.Tk):
         self.__logger_frame = LoggerFrame(self)
 
     def how_to_command(self):
+        """ how_to_command action of the menu displaying some "how to" questions """
         pass
 
     def about_command(self):
+        """ about_command action of the menu displaying RAnalysis informations """
         pass
 

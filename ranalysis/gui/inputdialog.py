@@ -11,9 +11,23 @@ from ranalysis.log.loghandler import logger
 
 
 class InputDialog:
-    """ Display input dialog for csv reading options """
+    """ Display input dialog for csv reading options
+
+    Attributes
+    ----------
+    parent : tkinter.Frame
+        the parent frame of the LoggerFrame
+
+    Methods
+    -------
+    submit()
+        submit_button action to submit entry options and destroy the frame
+    get_input_options()
+        get entry options
+    """
 
     def __init__(self, parent):
+        """ InputDialog constructor """
         top = self.top = tkinter.Toplevel(parent)
         self.__entry_label = Label(top, text='Enter the delimiter of the csv file:')
         self.__entry_label.pack()
@@ -30,6 +44,7 @@ class InputDialog:
         }
 
     def submit(self):
+        """ submit_button action to submit entry options and destroy the frame """
         if self.__entry_box.get():
             self.__input_options['delimiter'] = self.__entry_box.get()
         self.__input_options['unit'] = self.__checkbox_var.get()
@@ -37,4 +52,5 @@ class InputDialog:
         logger.log(logging.INFO, "[Input dialog] " + str(self.__input_options))
 
     def get_input_options(self):
+        """ Get entry options """
         return self.__input_options

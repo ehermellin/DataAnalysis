@@ -13,9 +13,23 @@ from ranalysis.log.loghandler import QueueHandler, logger
 
 
 class LoggerFrame:
-    """ Poll messages from a logging queue and display them in a scrolled text widget """
+    """ Poll messages from a logging queue and display them in a scrolled text widget Attributes
+    ----------
+    parent : tkinter.Frame
+        the parent frame of the LoggerFrame
+
+    Methods
+    -------
+    display(record)
+        display message in a scrolled text widget
+    poll_log_queue()
+        poll message from the queue and display it
+    quit()
+        destroy the frame
+    """
 
     def __init__(self, parent):
+        """ LoggerFrame constructor """
         top = self.top = tkinter.Toplevel(parent)
 
         # Create a ScrolledText wdiget
@@ -36,6 +50,7 @@ class LoggerFrame:
         self.top.after(100, self.poll_log_queue)
 
     def display(self, record):
+        """ Display message in a scrolled text widget """
         msg = self.queue_handler.format(record)
         self.__scrolled_text.configure(state='normal')
         self.__scrolled_text.insert(tkinter.END, msg + '\n', record.levelname)
@@ -44,6 +59,7 @@ class LoggerFrame:
         self.__scrolled_text.yview(tkinter.END)
 
     def poll_log_queue(self):
+        """ Poll message from the queue and display it """
         # Check every 100ms if there is a new message in the queue to display
         while True:
             try:
@@ -55,4 +71,5 @@ class LoggerFrame:
         self.top.after(100, self.poll_log_queue)
 
     def quit(self):
+        """ Destroy the frame """
         self.top.destroy()

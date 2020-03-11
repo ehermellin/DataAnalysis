@@ -10,7 +10,7 @@ from ranalysis.log.loghandler import logger
 
 
 class DataManager:
-    """ A class used to manage data
+    """ A class used to manage data from a csv file
 
         Attributes
         ----------

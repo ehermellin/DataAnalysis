@@ -56,7 +56,7 @@ class CliHandler:
             self.__data_manager.read_csv_file(file_path, {'delimiter': ';', 'unit': 1})
 
     def show_from_fieldname(self, x_fieldname, y_fieldname):
-        """ Plot data from fieldname in a matplotlib object
+        """ Plot data from fieldname in a plt matplotlib object
 
         Parameters
         ----------
@@ -71,7 +71,7 @@ class CliHandler:
         plt.show()
 
     def show_from_fieldnames(self, x_fieldname, y_fieldnames):
-        """ Plot multiple data from fieldnames in a matplotlib object
+        """ Plot multiple data from fieldnames in a plt matplotlib object
 
         Parameters
         ----------

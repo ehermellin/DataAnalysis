@@ -20,9 +20,33 @@ from ranalysis.plot.plotcreator import PlotCreator
 
 
 class PlotFrame(tkinter.Frame):
-    """ Display buttons, list, combobox and matplotlib canvas """
+    """ Display buttons, list, combobox and matplotlib canvas
+
+    Attributes
+    ----------
+    parent : tkinter.Frame
+        the parent frame of the PlotFrame
+
+    Methods
+    -------
+    initialize()
+        initialize all the tkinter objects of the frame
+    create_plot(name_style='ggplot')
+        create a matplotlib plot in a tkinter environment
+    load_data()
+        load_button action to load data from a csv file
+    add_plot()
+        add_button action to add created plot in the list
+    customize_plot()
+        customize_button action to change the matplotlib plot style
+    remove_plot()
+        remove_button action to remove selected plot from the list
+    on_list_select(evt)
+        display plots when plots are selected in the list (triggered by event on the list)
+    """
 
     def __init__(self, parent, **kw):
+        """ PlotFrame constructor """
         super().__init__(**kw)
         self.__parent = parent
         self.__data_field_names = []
@@ -37,6 +61,7 @@ class PlotFrame(tkinter.Frame):
         self.initialize()
 
     def initialize(self):
+        """ Initialize all the tkinter objects """
         # frame
         action_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
         action_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10, pady=10)
@@ -86,6 +111,7 @@ class PlotFrame(tkinter.Frame):
         self.create_plot()
 
     def create_plot(self, name_style='ggplot'):
+        """ Create a matplotlib plot in a tkinter environment """
         if self.__canvas is not None:
             self.__canvas.get_tk_widget().destroy()
         if self.__graph_frame is not None:
@@ -111,6 +137,7 @@ class PlotFrame(tkinter.Frame):
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     def load_data(self):
+        """ load_button action to load data from a csv file """
         self.__variable1_combo.set('')
         self.__variable2_combo.set('')
         self.__data_field_names = []
@@ -128,6 +155,7 @@ class PlotFrame(tkinter.Frame):
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
 
     def add_plot(self):
+        """ add_button action to add created plot in the list """
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
             plot_f = PlotCreator.get_instance()
             plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
@@ -139,11 +167,13 @@ class PlotFrame(tkinter.Frame):
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
     def customize_plot(self):
+        """ customize_button action to change the matplotlib plot style """
         if self.__style_combo.get() != "":
             logger.log(logging.INFO, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
 
     def remove_plot(self):
+        """ remove_button action to remove selected plot from the list """
         if self.__plot_list.size() > 0:
             logger.log(logging.INFO, "[PlotFrame] Remove plot")
             idxs = self.__plot_list.curselection()
@@ -156,6 +186,7 @@ class PlotFrame(tkinter.Frame):
             self.__variable1_combo["state"] = 'readonly'
 
     def on_list_select(self, evt):
+        """ Display plots when plots are selected in the list (triggered by event on the list) """
         plot_ids = []
         widget_list = evt.widget
         for idx in widget_list.curselection():

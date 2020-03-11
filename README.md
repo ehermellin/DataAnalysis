@@ -39,11 +39,11 @@ Clone the repository or download a zip file from Gitlab, go to the folder and si
 Clone the repository or download a zip file from Gitlab, go to the folder and simply run one of the following command in the *cmd* (Windows) or *terminal* (Linux / MacOs):
     
     # Display variable x and variable y in a plot
-	python ./ranalysis/run.py -f <path_to_csv_file> -x <x_variable_name> -y <y_variable_name>
+	python run.py -f <path_to_csv_file> -x <x_variable_name> -y <y_variable_name>
 	# Display variable x and variables y1, y2, ...  in a plot
-	python ./ranalysis/run.py -f <path_to_csv_file> -x <x_variable_name> -my <y_variable_name1,y_variable_name2>
+	python run.py -f <path_to_csv_file> -x <x_variable_name> -my <y_variable_name1,y_variable_name2>
 	# Display usage / help
-	python ./ranalysis/run.py -h
+	python .run.py -h
 
 ### Library
 

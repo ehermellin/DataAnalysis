@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 setup(
     name="RAnalysis",
     version="0.1",
-    description="Analysis data from CSV file",
+    description="Display and plot data from CSV files",
     long_description=open('README.md').read(),
     author='Emmanuel Hermellin',
     author_email='emmanuel.hermellin@onera.fr',

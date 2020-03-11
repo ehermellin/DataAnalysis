@@ -5,6 +5,7 @@
 
 import logging
 import tkinter
+from tkinter import messagebox
 from tkinter.ttk import Notebook
 
 from ranalysis.gui.loggerframe import LoggerFrame
@@ -96,5 +97,6 @@ class MainFrame(tkinter.Tk):
 
     def about_command(self):
         """ about_command action of the menu displaying RAnalysis informations """
+        messagebox.showinfo("About", "RAnalaysis v0.1\n\nhttp://gitlab-dtis.onera/s2im/rgine/ranalysis")
         pass
 

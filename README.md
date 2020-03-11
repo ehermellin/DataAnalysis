@@ -10,6 +10,22 @@ A python tools to display / plot data from csv files.
 
 Install Python 3.7+ and matplotlib library.
 
+### Data format
+
+| Variable 1 | Variable 2 | Variable 3 | Variable 4 | ... |
+|------------|------------|------------|------------|-----|
+| unit       | unit       | unit       | unit       | ... |
+| value      | value      | value      | value      | ... |
+| value      | value      | value      | value      | ... |
+| ...        | ...        | ...        | ...        | ... |
+
+*Note*: By default the delimiter of the csv column is ";" but you can use anything you want.
+It is important to notice the content of the line in the csv file:
+
+- First line : Name of the variable (string)
+- Second line (optional) : Unit of the variable (string) 
+- Other lines : Value of the variable (int or float)
+
 ### Standalone
 
 #### GUI

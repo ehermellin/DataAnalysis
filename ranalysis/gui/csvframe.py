@@ -24,7 +24,7 @@ class CsvFrame:
     """
 
     def __init__(self, parent, manager):
-        """ LoggerFrame constructor """
+        """ CsvFrame constructor """
         top = self.top = tkinter.Toplevel(parent)
 
         table = Frame(top)

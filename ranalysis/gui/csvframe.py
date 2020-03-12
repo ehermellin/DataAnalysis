@@ -30,7 +30,7 @@ class CsvFrame:
         """ LoggerFrame constructor """
         top = self.top = tkinter.Toplevel(parent)
 
-        table = Frame(top, width=500)
+        table = Frame(top)
         table.pack(side=tkinter.TOP)
         scrollbar_x = Scrollbar(table, orient=tkinter.HORIZONTAL)
         scrollbar_y = Scrollbar(table, orient=tkinter.VERTICAL)

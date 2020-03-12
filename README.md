@@ -32,7 +32,7 @@ It is important to notice the content of the line in the csv file:
 
 Clone the repository or download a zip file from Gitlab, go to the folder and simply run the following command in the *cmd* (Windows) or *terminal* (Linux / MacOs):
 
-	python ./ranalysis/run.py -gui
+	python run.py -gui
 
 #### CLI
 
@@ -43,7 +43,7 @@ Clone the repository or download a zip file from Gitlab, go to the folder and si
 	# Display variable x and variables y1, y2, ...  in a plot
 	python run.py -f <path_to_csv_file> -x <x_variable_name> -my <y_variable_name1,y_variable_name2>
 	# Display usage / help
-	python .run.py -h
+	python run.py -h
 
 ### Library
 

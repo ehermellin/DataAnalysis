@@ -4,7 +4,6 @@
 """ This file contains the CsvFrame class """
 
 import tkinter
-from tkinter import W
 from tkinter.ttk import Frame, Scrollbar, Treeview
 
 
@@ -29,7 +28,7 @@ class CsvFrame:
         top = self.top = tkinter.Toplevel(parent)
 
         table = Frame(top)
-        table.pack(side=tkinter.TOP)
+        table.pack(expand=True, fill=tkinter.BOTH)
         scrollbar_x = Scrollbar(table, orient=tkinter.HORIZONTAL)
         scrollbar_y = Scrollbar(table, orient=tkinter.VERTICAL)
         tree = Treeview(table, columns=manager.get_field_names(), show="headings", selectmode="extended",
@@ -40,12 +39,12 @@ class CsvFrame:
         scrollbar_x.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 
         for field_name in manager.get_field_names():
-            tree.heading(field_name, text=field_name, anchor=W)
-            tree.column(field_name, stretch=tkinter.NO, minwidth=50, width=100)
+            tree.heading(field_name, text=field_name, anchor=tkinter.W)
+            tree.column(field_name, stretch=tkinter.YES)
 
         for entry in manager.get_data_tuple():
             tree.insert("", 'end', values=entry)
-        tree.pack()
+        tree.pack(expand=True, fill=tkinter.BOTH)
 
     def quit(self):
         """ Destroy the frame """

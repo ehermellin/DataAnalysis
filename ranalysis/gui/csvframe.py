@@ -7,8 +7,6 @@ import tkinter
 from tkinter import W
 from tkinter.ttk import Frame, Scrollbar, Treeview
 
-from ranalysis.log.loghandler import logger
-
 
 class CsvFrame:
     """ Display csv data in a tkinter TreeView
@@ -17,8 +15,8 @@ class CsvFrame:
     ----------
     parent : tkinter.Frame
         the parent frame of the LoggerFrame
-    data : dict
-        the data from csv file to display
+    manager : DataManager
+        the data manager
 
     Methods
     -------

@@ -46,6 +46,8 @@ class PlotFrame(tkinter.Frame):
         remove_button action to remove selected plot from the list
     on_list_select(evt)
         display plots when plots are selected in the list (triggered by event on the list)
+    __reset_plotframe()
+        reset plot frame attributes
     """
 
     def __init__(self, parent, **kw):
@@ -143,9 +145,7 @@ class PlotFrame(tkinter.Frame):
 
     def load_data(self):
         """ load_button action to load data from a csv file """
-        self.__variable1_combo.set('')
-        self.__variable2_combo.set('')
-        self.__data_field_names = []
+        self.__reset_plotframe()
 
         if self.__data_manager is not None:
             self.__data_manager.reset_manager()
@@ -213,3 +213,11 @@ class PlotFrame(tkinter.Frame):
         else:
             clear(self.__graph)
             self.__canvas.draw()
+
+    def __reset_plotframe(self):
+        """ Reset plot frame attributes """
+        self.__variable1_combo.set('')
+        self.__variable2_combo.set('')
+        self.__data_field_names = []
+        self.__plot_list.delete(0, tkinter.END)
+        self.__variable1_combo["state"] = 'readonly'

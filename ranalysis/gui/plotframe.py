@@ -13,6 +13,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 from ranalysis.data.datamanager import DataManager
+from ranalysis.gui.csvframe import CsvFrame
 from ranalysis.gui.inputdialog import InputDialog
 from ranalysis.log.loghandler import logger
 from ranalysis.plot.graph import graph_from_plot_ids, clear
@@ -35,6 +36,8 @@ class PlotFrame(tkinter.Frame):
         create a matplotlib plot in a tkinter environment
     load_data()
         load_button action to load data from a csv file
+    display_data()
+        display csv data in a CsvFrame
     add_plot()
         add_button action to add created plot in the list
     customize_plot()
@@ -75,10 +78,12 @@ class PlotFrame(tkinter.Frame):
         # button
         load_button = Button(action_frame, text="Load data", command=self.load_data)
         load_button.grid(row=1, column=1, padx=5, pady=5)
+        display_button = Button(action_frame, text="Display data", command=self.display_data)
+        display_button.grid(row=1, column=2, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot)
-        add_button.grid(row=1, column=6, padx=5, pady=5)
+        add_button.grid(row=1, column=7, padx=5, pady=5)
         customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot)
-        customize_button.grid(row=1, column=8, padx=5, pady=5)
+        customize_button.grid(row=1, column=9, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
 
         # list
@@ -91,17 +96,17 @@ class PlotFrame(tkinter.Frame):
                                           state='readonly',
                                           postcommand=lambda: self.__variable1_combo.configure(values=
                                                                                                self.__data_field_names))
-        self.__variable1_combo.grid(row=1, column=4, padx=5, pady=5)
+        self.__variable1_combo.grid(row=1, column=5, padx=5, pady=5)
         data_select_combo2 = tkinter.StringVar()
         self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2, values=self.__data_field_names,
                                           state='readonly',
                                           postcommand=lambda: self.__variable2_combo.configure(values=
                                                                                                self.__data_field_names))
-        self.__variable2_combo.grid(row=1, column=5, padx=5, pady=5)
+        self.__variable2_combo.grid(row=1, column=6, padx=5, pady=5)
         style_select_combo3 = tkinter.StringVar()
         self.__style_combo = Combobox(action_frame, textvariable=style_select_combo3, values=style.available,
                                       state='readonly')
-        self.__style_combo.grid(row=1, column=7, padx=5, pady=5)
+        self.__style_combo.grid(row=1, column=8, padx=5, pady=5)
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
@@ -141,18 +146,28 @@ class PlotFrame(tkinter.Frame):
         self.__variable1_combo.set('')
         self.__variable2_combo.set('')
         self.__data_field_names = []
-        self.__data_manager = DataManager()
+
+        if self.__data_manager is not None:
+            self.__data_manager.reset_manager()
+        else:
+            self.__data_manager = DataManager()
+
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
 
         input_dialog = InputDialog(self)
         self.wait_window(input_dialog.top)
 
         if filename is not None and len(filename) > 0:
-            logger.log(logging.INFO, "[PlotFrame] Open file:" + str(filename))
+            logger.log(logging.DEBUG, "[PlotFrame] Open file:" + str(filename))
             self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
             self.__data_field_names = self.__data_manager.get_field_names()
         else:
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
+
+    def display_data(self):
+        """ display csv data in a CsvFrame """
+        if self.__data_manager.manager_have_data():
+            CsvFrame(self, self.__data_manager)
 
     def add_plot(self):
         """ add_button action to add created plot in the list """
@@ -160,7 +175,7 @@ class PlotFrame(tkinter.Frame):
             plot_f = PlotCreator.get_instance()
             plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
                                                [self.__variable2_combo.get()])
-            logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot[0]))
+            logger.log(logging.DEBUG, "[PlotFrame] Add plot: " + str(plot[0]))
             self.__plot_list.insert(tkinter.END, plot[0])
             self.__variable1_combo["state"] = 'disabled'
         else:
@@ -169,13 +184,13 @@ class PlotFrame(tkinter.Frame):
     def customize_plot(self):
         """ customize_button action to change the matplotlib plot style """
         if self.__style_combo.get() != "":
-            logger.log(logging.INFO, "[PlotFrame] Style: " + self.__style_combo.get())
+            logger.log(logging.DEBUG, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
 
     def remove_plot(self):
         """ remove_button action to remove selected plot from the list """
         if self.__plot_list.size() > 0:
-            logger.log(logging.INFO, "[PlotFrame] Remove plot")
+            logger.log(logging.DEBUG, "[PlotFrame] Remove plot")
             idxs = self.__plot_list.curselection()
             for idx in idxs:
                 self.__plot_list.delete(idx)

@@ -36,7 +36,7 @@ class LoggerFrame:
         self.__scrolled_text = ScrolledText(top, state='disabled', height=12)
         self.__scrolled_text.grid(row=0, column=0, sticky=(N, S, W, E))
         self.__scrolled_text.configure(font='TkFixedFont')
-        self.__scrolled_text.tag_config('INFO', foreground='black')
+        self.__scrolled_text.tag_config('DEBUG', foreground='black')
         self.__scrolled_text.tag_config('DEBUG', foreground='gray')
         self.__scrolled_text.tag_config('WARNING', foreground='orange')
         self.__scrolled_text.tag_config('ERROR', foreground='red')

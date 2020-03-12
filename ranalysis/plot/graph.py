@@ -35,7 +35,7 @@ def graph_from_fieldname(ax, manager, x_fieldname, y_fieldname):
     y_fieldname : str
         the fieldname of the y-axis variable to plot
     """
-    logger.log(logging.INFO, "[Graph] Graph from fieldname")
+    logger.log(logging.DEBUG, "[Graph] Graph from fieldname")
     plots = [PlotCreator.get_instance().plot_from_fieldname(manager, x_fieldname, y_fieldname)]
     plot(ax, plots)
 
@@ -54,7 +54,7 @@ def graph_from_fieldnames(ax, manager, x_fieldname, y_fieldnames):
     y_fieldnames : list(str)
         the list of fieldname of the y-axis variable to plot
     """
-    logger.log(logging.INFO, "[Graph] Graph from fieldnames")
+    logger.log(logging.DEBUG, "[Graph] Graph from fieldnames")
     plots = PlotCreator.get_instance().plot_from_fieldnames(manager, x_fieldname, y_fieldnames)
     plot(ax, plots)
 
@@ -69,7 +69,7 @@ def graph_from_plots(ax, list_plots):
     list_plots : list(plot)
         the list of plot
     """
-    logger.log(logging.INFO, "[Graph] Graph from plots")
+    logger.log(logging.DEBUG, "[Graph] Graph from plots")
     plot(ax, list_plots)
 
 
@@ -83,7 +83,7 @@ def graph_from_plot_ids(ax, plot_ids):
     plot_ids : list(int)
         the list of plot ids
     """
-    logger.log(logging.INFO, "[Graph] Graph from plot ids")
+    logger.log(logging.DEBUG, "[Graph] Graph from plot ids")
     plots_to_display = []
     for plot_id in plot_ids:
         pattern = re.search('id=(.+?) ', plot_id)
@@ -109,7 +109,7 @@ def graph_from_data(ax, x_data, y_data, x_label, y_label):
     y_label : str
         the label of the y-axis
     """
-    logger.log(logging.INFO, "[Graph] Graph from data")
+    logger.log(logging.DEBUG, "[Graph] Graph from data")
     plots_to_display = [PlotCreator.get_instance().plot_from_data(x_data, y_data, x_label, y_label)]
     plot(ax, plots_to_display)
 
@@ -130,7 +130,7 @@ def graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label):
     y_multiple_label : str
         the list of label of the y-axis
     """
-    logger.log(logging.INFO, "[Graph] Graph from multiple data")
+    logger.log(logging.DEBUG, "[Graph] Graph from multiple data")
     plots_to_display = PlotCreator.get_instance().plot_from_multiple_data(x_data, y_datas, x_label, y_multiple_label)
     plot(ax, plots_to_display)
 

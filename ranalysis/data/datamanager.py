@@ -23,25 +23,42 @@ class DataManager:
 
         Methods
         -------
-        read_csv_file(filename, options):
+        read_csv_file(filename, options)
             put the record in the log queue
-        get_field_names():
+        dict_to_list_tuple()
+            convert dictionary values into list of tuple
+        get_data_tuple()
+            get the data as a list of tuple
+        get_field_names()
             get list of data field names
-        get_unit_from_field_name(field_name):
+        get_unit_from_field_name(field_name)
             get unit from data field name
-        get_data_from_field_name(field_name):
+        get_data_from_field_name(field_name)
             get data from data field name
-        reset_manager():
+        reset_manager()
             reset the data manager
-        __copy_and_adapt_data(data):
+        __copy_and_adapt_data(data)
             correct and return a list of data
         """
 
     def __init__(self):
         """ DataManager constructor """
         self.__fieldnames = []
+
         self.__data = {}
+        self.__data_values_as_list_tuple = []
+
         self.__unit_in_data = 1
+
+    def manager_have_data(self):
+        """ Does the manager contains data read from csv file ?
+
+        Returns
+        ------
+        bool
+            true if manager has data, false otherwise
+        """
+        return bool(self.__data)
 
     def read_csv_file(self, filename, options):
         """ Read a csv file from its file name and options and fill data in dictionary
@@ -54,7 +71,7 @@ class DataManager:
             the reading options of the csv file
         """
         self.__unit_in_data = options['unit']
-        logger.log(logging.INFO, "[DataManager] " + filename + " " + str(options))
+        logger.log(logging.DEBUG, "[DataManager] " + filename + " " + str(options))
         with open(filename, 'rU') as infile:
             # read the file as a dictionary for each row ({header : value})
             reader = csv.DictReader(infile, delimiter=options['delimiter'])
@@ -67,6 +84,35 @@ class DataManager:
                     except KeyError:
                         logger.log(logging.DEBUG, "[DataManager] Key error:" + header + " " + value)
                         self.__data[header] = [value]
+        self.dict_to_list_tuple()
+
+    def dict_to_list_tuple(self):
+        """ Convert dictionary values into list of tuple """
+        dict_values_to_list = list(self.__data.values())
+
+        # Test len of each list (must be equal)
+        it = iter(dict_values_to_list)
+        the_len = len(next(it))
+        if not all(len(iter_list) == the_len for iter_list in it):
+            logger.log(logging.ERROR, "[DataManager] Not all lists have same length")
+        else:
+            # Convert to tuple
+            logger.log(logging.DEBUG, "[DataManager] Converting dict data to list of tuple")
+            for i in range(the_len):
+                temp_list = []
+                for j in dict_values_to_list:
+                    temp_list.append(j[i])
+                self.__data_values_as_list_tuple.append(tuple(temp_list))
+
+    def get_data_tuple(self):
+        """ Get the data as a list of tuple
+
+        Returns
+        ------
+        list(tuple)
+            the data values as a list of tuple
+        """
+        return self.__data_values_as_list_tuple
 
     def get_field_names(self):
         """ Get the list of data field names
@@ -121,8 +167,10 @@ class DataManager:
 
     def reset_manager(self):
         """ Reset the data manager """
-        self.__fieldnames = ()
+        logger.log(logging.DEBUG, "[DataManager] Reset data manager")
+        self.__fieldnames = []
         self.__data = {}
+        self.__data_values_as_list_tuple = []
         self.__unit_in_data = 1
 
     def __copy_and_adapt_data(self, data):

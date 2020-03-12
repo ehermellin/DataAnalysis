@@ -69,7 +69,7 @@ class CliHandler:
         y_fieldname : str
             the fieldname of the y-axis variable to plot
         """
-        logger.log(logging.INFO, "[CliHandler] show from field name " + x_fieldname + " " + y_fieldname)
+        logger.log(logging.DEBUG, "[CliHandler] show from field name " + x_fieldname + " " + y_fieldname)
         fig, ax = plt.subplots()
         graph_from_fieldname(ax, self.__data_manager, x_fieldname, y_fieldname)
         plt.show()
@@ -84,7 +84,7 @@ class CliHandler:
         y_fieldnames : list(str)
             the list of fieldname of the y-axis variable to plot
         """
-        logger.log(logging.INFO, "[CliHandler] show from field names " + x_fieldname + " " + str(y_fieldnames))
+        logger.log(logging.DEBUG, "[CliHandler] show from field names " + x_fieldname + " " + str(y_fieldnames))
         fig, ax = plt.subplots()
         graph_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
         plt.show()

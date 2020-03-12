@@ -99,7 +99,7 @@ class PlotCreator:
         plot
             the plot
         """
-        logger.log(logging.INFO, "[PlotCreator] Plot from fieldnames")
+        logger.log(logging.DEBUG, "[PlotCreator] Plot from fieldnames")
         plot = self.__create_plot(data_manager.get_data_from_field_name(x_data_name),
                                   data_manager.get_data_from_field_name(y_data_name),
                                   x_data_name,
@@ -125,7 +125,7 @@ class PlotCreator:
         list(plot)
             the list of plots
         """
-        logger.log(logging.INFO, "[PlotCreator] Plot from multiple fieldnames")
+        logger.log(logging.DEBUG, "[PlotCreator] Plot from multiple fieldnames")
         plots_list = []
         for y_data_name in y_data_names:
             plot = self.__create_plot(data_manager.get_data_from_field_name(x_data_name),
@@ -160,7 +160,7 @@ class PlotCreator:
         plot
             the plot
         """
-        logger.log(logging.INFO, "[PlotCreator] Plot from data")
+        logger.log(logging.DEBUG, "[PlotCreator] Plot from data")
         plot = self.__create_plot(x_data, y_data, x_axis, y_axis, x_unit, y_unit)
         return plot
 
@@ -187,7 +187,7 @@ class PlotCreator:
         list(plot)
             the list of plot
         """
-        logger.log(logging.INFO, "[PlotCreator] Plot from multiple data")
+        logger.log(logging.DEBUG, "[PlotCreator] Plot from multiple data")
         plots_list = []
         for i in range(len(y_multiple_data)):
             plots_list.append(self.__create_plot(x_data, y_multiple_data[i], x_axis, y_multiple_axis[i],

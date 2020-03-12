@@ -76,16 +76,16 @@ class MainFrame(tkinter.Tk):
         self.__counter += 1
         tab = PlotFrame(self)
         self.__notebook.add(tab, text="Plot frame " + str(self.__counter))
-        logger.log(logging.INFO, "[MainFrame] Add tab: " + str(self.__counter))
+        logger.log(logging.DEBUG, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):
         """ remove_tab_command action of the menu removing selected notebook tab """
         self.__notebook.forget(self.__notebook.select())
-        logger.log(logging.INFO, "[MainFrame] Remove tab")
+        logger.log(logging.DEBUG, "[MainFrame] Remove tab")
 
     def logger(self):
         """ Display or hide the LoggerFrame """
-        logger.log(logging.INFO, "[MainFrame] Open Logger frame")
+        logger.log(logging.DEBUG, "[MainFrame] Open Logger frame")
         if self.__logger_frame is not None:
             self.__logger_frame.quit()
         self.__logger_frame = None

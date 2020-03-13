@@ -77,7 +77,7 @@ class MainFrame(tkinter.Tk):
         self.__counter += 1
         tab = PlotFrame(self)
         title = simpledialog.askstring("Tab Title", "What is the title of the tab?", parent=self)
-        if title == "":
+        if title is None or title == "":
             title = "Plot frame " + str(self.__counter)
         self.__notebook.add(tab, text=title)
         logger.log(logging.DEBUG, "[MainFrame] Add tab: " + str(self.__counter))

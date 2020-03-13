@@ -160,19 +160,19 @@ class PlotFrame(tkinter.Frame):
 
     def load_data(self):
         """ load_button action to load data from a csv file """
-        self.__reset_plotframe()
-
-        if self.__data_manager is not None:
-            self.__data_manager.reset_manager()
-        else:
-            self.__data_manager = DataManager()
 
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
 
-        input_dialog = InputDialog(self)
-        self.wait_window(input_dialog.top)
-
         if filename is not None and len(filename) > 0:
+            self.__reset_plotframe()
+
+            if self.__data_manager is not None:
+                self.__data_manager.reset_manager()
+            else:
+                self.__data_manager = DataManager()
+
+            input_dialog = InputDialog(self)
+            self.wait_window(input_dialog.top)
             logger.log(logging.DEBUG, "[PlotFrame] Open file:" + str(filename))
             self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
         else:
@@ -228,14 +228,16 @@ class PlotFrame(tkinter.Frame):
             clear(self.__graph)
             self.__canvas.draw()
 
+    def add_title(self):
+        """ Add title to the graph"""
+        title = simpledialog.askstring("Graph Title", "What is the title of the Graph?", parent=self)
+        if title is not None and title != "":
+            graph_add_title(self.__graph, title)
+            self.__canvas.draw()
+
     def __reset_plotframe(self):
         """ Reset plot frame attributes """
         self.__variable1_combo.set('')
         self.__variable2_combo.set('')
         self.__plot_list.delete(0, tkinter.END)
         self.__variable1_combo["state"] = 'readonly'
-
-    def add_title(self):
-        title = simpledialog.askstring("Graph Title", "What is the title of the Graph?", parent=self)
-        graph_add_title(self.__graph, title)
-        self.__canvas.draw()

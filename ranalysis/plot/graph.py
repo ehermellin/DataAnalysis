@@ -9,6 +9,7 @@
     * graph_from_plot_ids - plot list of plots from there ids in a matplotlib object
     * graph_from_data - plot data in a matplotlib object
     * graph_from_multiple_data - plot multiple data in a matplotlib object
+    * graph_add_title - add title to the graph
     * clear - clear matplotlib axis object
     * plot - plot in matplotlib object
 
@@ -135,6 +136,19 @@ def graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label):
     plot(ax, plots_to_display)
 
 
+def graph_add_title(ax, title):
+    """ Add title to the graph
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    title : str
+        the title of the graph
+    """
+    ax.set_title(title)
+
+
 def clear(ax):
     """ Clear matplotlib axis object
 
@@ -167,4 +181,4 @@ def plot(ax, plots_to_display):
         else:
             logger.log(logging.ERROR, "[Graph] x and y data do not have the same size")
 
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.10), ncol=5, fancybox=True)
+    ax.legend(loc='upper center', bbox_to_anchor=(1.05, 0.75), ncol=1, fancybox=True)

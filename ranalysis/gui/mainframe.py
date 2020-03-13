@@ -5,7 +5,7 @@
 
 import logging
 import tkinter
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from tkinter.ttk import Notebook
 
 from ranalysis.gui.loggerframe import LoggerFrame
@@ -41,7 +41,7 @@ class MainFrame(tkinter.Tk):
         """ MainFrame constructor """
         tkinter.Tk.__init__(self, parent)
         self.__parent = parent
-        self.__notebook = Notebook(self)
+        self.__notebook = None
         self.__logger_frame = None
         self.__counter = 0
         self.initialize()
@@ -51,6 +51,7 @@ class MainFrame(tkinter.Tk):
         self.title('RGINE Data Analysis')
 
         # notebook
+        self.__notebook = Notebook(self, width=900, height=600)
         self.__notebook.pack(expand=1, fill='both')
 
         # menu
@@ -75,7 +76,10 @@ class MainFrame(tkinter.Tk):
         """ add_tab_command action of the menu creating new notebook tab """
         self.__counter += 1
         tab = PlotFrame(self)
-        self.__notebook.add(tab, text="Plot frame " + str(self.__counter))
+        title = simpledialog.askstring("Tab Title", "What is the title of the tab?", parent=self)
+        if title == "":
+            title = "Plot frame " + str(self.__counter)
+        self.__notebook.add(tab, text=title)
         logger.log(logging.DEBUG, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):

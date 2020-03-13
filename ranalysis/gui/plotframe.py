@@ -5,6 +5,7 @@
 
 import logging
 import tkinter
+from tkinter import simpledialog
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button, Label
 
@@ -16,7 +17,7 @@ from ranalysis.data.datamanager import DataManager
 from ranalysis.gui.csvframe import CsvFrame
 from ranalysis.gui.inputdialog import InputDialog
 from ranalysis.log.loghandler import logger
-from ranalysis.plot.graph import graph_from_plot_ids, clear
+from ranalysis.plot.graph import graph_from_plot_ids, clear, graph_add_title
 from ranalysis.plot.plotcreator import PlotCreator
 
 
@@ -48,6 +49,8 @@ class PlotFrame(tkinter.Frame):
         display plots when plots are selected in the list (triggered by event on the list)
     __reset_plotframe()
         reset plot frame attributes
+    add_title()
+        add title to the matplotlib graph
     """
 
     def __init__(self, parent, **kw):
@@ -84,7 +87,9 @@ class PlotFrame(tkinter.Frame):
         add_button = Button(action_frame, text="Add plot", command=self.add_plot, width=15)
         add_button.grid(row=1, column=4, rowspan=2, padx=5, pady=5)
         customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot, width=15)
-        customize_button.grid(row=1, column=7, rowspan=2, padx=5, pady=5)
+        customize_button.grid(row=1, column=7, rowspan=1, padx=5, pady=5)
+        title_button = Button(action_frame, text="Add title", command=self.add_title, width=15)
+        title_button.grid(row=2, column=7, rowspan=1, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=15)
 
         # label
@@ -143,6 +148,7 @@ class PlotFrame(tkinter.Frame):
         style.use(name_style)
         figure = Figure(figsize=(5, 5))
         self.__graph = figure.add_subplot(111)
+        figure.subplots_adjust(left=0.06)
 
         self.__canvas = FigureCanvasTkAgg(figure, master=self.__graph_frame)
         self.__canvas.draw()
@@ -228,3 +234,8 @@ class PlotFrame(tkinter.Frame):
         self.__variable2_combo.set('')
         self.__plot_list.delete(0, tkinter.END)
         self.__variable1_combo["state"] = 'readonly'
+
+    def add_title(self):
+        title = simpledialog.askstring("Graph Title", "What is the title of the Graph?", parent=self)
+        graph_add_title(self.__graph, title)
+        self.__canvas.draw()

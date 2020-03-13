@@ -54,7 +54,6 @@ class PlotFrame(tkinter.Frame):
         """ PlotFrame constructor """
         super().__init__(**kw)
         self.__parent = parent
-        self.__data_field_names = []
         self.__variable1_combo = None
         self.__variable2_combo = None
         self.__style_combo = None
@@ -89,21 +88,23 @@ class PlotFrame(tkinter.Frame):
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot)
 
         # list
-        self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE)
+        self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE, exportselection=False)
         self.__plot_list.bind('<<ListboxSelect>>', self.on_list_select)
 
         # combo
         data_select_combo1 = tkinter.StringVar()
-        self.__variable1_combo = Combobox(action_frame, textvariable=data_select_combo1, values=self.__data_field_names,
+        self.__variable1_combo = Combobox(action_frame, textvariable=data_select_combo1,
+                                          values=self.__data_manager.get_field_names(),
                                           state='readonly',
-                                          postcommand=lambda: self.__variable1_combo.configure(values=
-                                                                                               self.__data_field_names))
+                                          postcommand=lambda: self.__variable1_combo
+                                          .configure(values=self.__data_manager.get_field_names()))
         self.__variable1_combo.grid(row=1, column=5, padx=5, pady=5)
         data_select_combo2 = tkinter.StringVar()
-        self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2, values=self.__data_field_names,
+        self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2,
+                                          values=self.__data_manager.get_field_names(),
                                           state='readonly',
-                                          postcommand=lambda: self.__variable2_combo.configure(values=
-                                                                                               self.__data_field_names))
+                                          postcommand=lambda: self.__variable2_combo
+                                          .configure(values=self.__data_manager.get_field_names()))
         self.__variable2_combo.grid(row=1, column=6, padx=5, pady=5)
         style_select_combo3 = tkinter.StringVar()
         self.__style_combo = Combobox(action_frame, textvariable=style_select_combo3, values=style.available,
@@ -160,14 +161,13 @@ class PlotFrame(tkinter.Frame):
         if filename is not None and len(filename) > 0:
             logger.log(logging.DEBUG, "[PlotFrame] Open file:" + str(filename))
             self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
-            self.__data_field_names = self.__data_manager.get_field_names()
         else:
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
 
     def display_data(self):
         """ display csv data in a CsvFrame """
         if self.__data_manager.manager_have_data():
-            CsvFrame(self, self.__data_manager)
+            CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
 
     def add_plot(self):
         """ add_button action to add created plot in the list """
@@ -218,6 +218,5 @@ class PlotFrame(tkinter.Frame):
         """ Reset plot frame attributes """
         self.__variable1_combo.set('')
         self.__variable2_combo.set('')
-        self.__data_field_names = []
         self.__plot_list.delete(0, tkinter.END)
         self.__variable1_combo["state"] = 'readonly'

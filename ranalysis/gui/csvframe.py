@@ -3,8 +3,11 @@
 
 """ This file contains the CsvFrame class """
 
+import logging
 import tkinter
 from tkinter.ttk import Frame, Scrollbar, Treeview, Combobox, Label
+
+from ranalysis.log.loghandler import logger
 
 
 class CsvFrame:
@@ -50,6 +53,20 @@ class CsvFrame:
                                 postcommand=lambda: self.combo_y.configure(values=manager.get_field_names()))
         self.combo_y.grid(row=1, column=4, padx=5, pady=5)
 
+        label_marker = Label(action_frame, text="Choose marker: ")
+        label_marker.grid(row=1, column=5, padx=5, pady=5)
+        list_marker = ['.', 'x', 'd', '+']
+        marker_select_combo = tkinter.StringVar()
+        self.combo_marker = Combobox(action_frame, textvariable=marker_select_combo, values=list_marker, state='readonly')
+        self.combo_marker.grid(row=1, column=6, padx=5, pady=5)
+
+        label_color = Label(action_frame, text="Choose color: ")
+        label_color.grid(row=1, column=7, padx=5, pady=5)
+        list_color = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'white']
+        color_select_combo = tkinter.StringVar()
+        self.combo_color = Combobox(action_frame, textvariable=color_select_combo, values=list_color, state='readonly')
+        self.combo_color.grid(row=1, column=8, padx=5, pady=5)
+
         table_frame = Frame(top)
         table_frame.pack(side=tkinter.BOTTOM, expand=True, fill=tkinter.BOTH)
         scrollbar_x = Scrollbar(table_frame, orient=tkinter.HORIZONTAL)
@@ -84,8 +101,19 @@ class CsvFrame:
                 if not isinstance(value_y, int):
                     value_y = value_y.replace(',', '.')
 
-                self.__associated_graph.plot(float(value_x), float(value_y), marker='o', markersize=3, color="red")
-                self.__associated_canvas.draw()
+                marker = self.combo_marker.get()
+                if marker == "":
+                    marker = '+'
+
+                color = self.combo_color.get()
+                if color == "":
+                    color = 'red'
+                try:
+                    self.__associated_graph.plot(float(value_x), float(value_y), marker=marker, markersize=3,
+                                                 color=color)
+                    self.__associated_canvas.draw()
+                except ValueError:
+                    logger.log(logging.ERROR, "[CsvFrame] Error when plotting point (during conversion process)")
 
     def quit(self):
         """ Destroy the frame """

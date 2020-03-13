@@ -51,7 +51,7 @@ class MainFrame(tkinter.Tk):
         self.title('RGINE Data Analysis')
 
         # notebook
-        self.__notebook = Notebook(self, width=900, height=600)
+        self.__notebook = Notebook(self, width=975, height=600)
         self.__notebook.pack(expand=1, fill='both')
 
         # menu

@@ -14,12 +14,14 @@ class DataManager:
 
         Attributes
         ----------
+        __filename : str
+            the path to the data file
+        __reading_options : dict
+            the reding options of the csv file
         __fieldnames : list(str)
             list of fieldnames (name of the data variables)
         __data : dict
             the read csv data
-        __unit_in_data : int
-            unit read from csv file (1 if units are in the file, 0 otherwise)
 
         Methods
         -------
@@ -43,12 +45,12 @@ class DataManager:
 
     def __init__(self):
         """ DataManager constructor """
-        self.__fieldnames = []
+        self.__filename = ""
+        self.__reading_options = {}
 
+        self.__fieldnames = []
         self.__data = {}
         self.__data_values_as_list_tuple = []
-
-        self.__unit_in_data = 1
 
     def manager_have_data(self):
         """ Does the manager contains data read from csv file ?
@@ -70,11 +72,12 @@ class DataManager:
         options : dict
             the reading options of the csv file
         """
-        self.__unit_in_data = options['unit']
-        logger.log(logging.DEBUG, "[DataManager] " + filename + " " + str(options))
-        with open(filename, 'rU') as infile:
+        self.__filename = filename
+        self.__reading_options = options
+        logger.log(logging.DEBUG, "[DataManager] " + self.__filename + " " + str(self.__reading_options))
+        with open(self.__filename, 'rU') as infile:
             # read the file as a dictionary for each row ({header : value})
-            reader = csv.DictReader(infile, delimiter=options['delimiter'])
+            reader = csv.DictReader(infile, delimiter=self.__reading_options['delimiter'])
             for row in reader:
                 for header, value in row.items():
                     try:
@@ -138,7 +141,7 @@ class DataManager:
             the unit of data field name
         """
         if field_name in self.__data:
-            if self.__unit_in_data == 1:
+            if self.__reading_options['unit'] == 1:
                 return self.__data[field_name][0]
             else:
                 return ""
@@ -165,13 +168,22 @@ class DataManager:
             logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
             return list()
 
+    def refresh_data(self):
+        """ Refresh data from the same data file """
+        if self.__filename != "":
+            self.__fieldnames = []
+            self.__data = {}
+            self.__data_values_as_list_tuple = []
+            self.read_csv_file(self.__filename, self.__reading_options)
+
     def reset_manager(self):
         """ Reset the data manager """
         logger.log(logging.DEBUG, "[DataManager] Reset data manager")
+        self.__filename = ""
+        self.__reading_options = {}
         self.__fieldnames = []
         self.__data = {}
         self.__data_values_as_list_tuple = []
-        self.__unit_in_data = 1
 
     def __copy_and_adapt_data(self, data):
         """ Correct and return a list of data
@@ -187,7 +199,7 @@ class DataManager:
             the copied and corrected data
         """
         data_temp = data.copy()
-        if self.__unit_in_data == 1:
+        if self.__reading_options['unit'] == 1:
             data_temp.remove(data_temp[0])
         data_temp = [sub.replace(',', '.') for sub in data_temp]
         try:

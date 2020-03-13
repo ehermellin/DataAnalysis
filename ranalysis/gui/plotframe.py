@@ -37,6 +37,8 @@ class PlotFrame(tkinter.Frame):
         create a matplotlib plot in a tkinter environment
     load_data()
         load_button action to load data from a csv file
+    refresh_data()
+        refresh data from the same csv file
     display_data()
         display csv data in a CsvFrame
     add_plot()
@@ -47,10 +49,10 @@ class PlotFrame(tkinter.Frame):
         remove_button action to remove selected plot from the list
     on_list_select(evt)
         display plots when plots are selected in the list (triggered by event on the list)
-    __reset_plotframe()
-        reset plot frame attributes
     add_title()
         add title to the matplotlib graph
+    __reset_plotframe()
+        reset plot frame attributes
     """
 
     def __init__(self, parent, **kw):
@@ -80,25 +82,27 @@ class PlotFrame(tkinter.Frame):
         self.__graph_frame.pack(side=tkinter.RIGHT, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
 
         # button
-        load_button = Button(action_frame, text="Load data", command=self.load_data, width=15)
-        load_button.grid(row=1, column=1, padx=5, pady=5)
+        load_button = Button(action_frame, text="Load data", command=self.load_data, width=35)
+        load_button.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
+        refresh_button = Button(action_frame, text="Refresh data", command=self.refresh_data, width=15)
+        refresh_button.grid(row=2, column=1, padx=5, pady=5)
         display_button = Button(action_frame, text="Display data", command=self.display_data, width=15)
-        display_button.grid(row=2, column=1, padx=5, pady=5)
+        display_button.grid(row=2, column=2, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot, width=15)
-        add_button.grid(row=1, column=4, rowspan=2, padx=5, pady=5)
+        add_button.grid(row=1, column=5, rowspan=1, padx=5, pady=5)
         customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot, width=15)
-        customize_button.grid(row=1, column=7, rowspan=1, padx=5, pady=5)
+        customize_button.grid(row=1, column=8, rowspan=2, padx=5, pady=5)
         title_button = Button(action_frame, text="Add title", command=self.add_title, width=15)
-        title_button.grid(row=2, column=7, rowspan=1, padx=5, pady=5)
+        title_button.grid(row=2, column=5, rowspan=1, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=15)
 
         # label
         label_x = Label(action_frame, text="Choose x axis: ")
-        label_x.grid(row=1, column=2, padx=5, pady=5)
+        label_x.grid(row=1, column=3, padx=5, pady=5)
         label_y = Label(action_frame, text="Choose y axis: ")
-        label_y.grid(row=2, column=2, padx=5, pady=5)
+        label_y.grid(row=2, column=3, padx=5, pady=5)
         label_style = Label(action_frame, text="Choose style: ")
-        label_style.grid(row=1, column=5, rowspan=2, padx=5, pady=5)
+        label_style.grid(row=1, column=6, rowspan=2, padx=5, pady=5)
 
         # list
         self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE, exportselection=False)
@@ -111,18 +115,18 @@ class PlotFrame(tkinter.Frame):
                                           state='readonly',
                                           postcommand=lambda: self.__variable1_combo
                                           .configure(values=self.__data_manager.get_field_names()))
-        self.__variable1_combo.grid(row=1, column=3, padx=5, pady=5)
+        self.__variable1_combo.grid(row=1, column=4, padx=5, pady=5)
         data_select_combo2 = tkinter.StringVar()
         self.__variable2_combo = Combobox(action_frame, textvariable=data_select_combo2,
                                           values=self.__data_manager.get_field_names(),
                                           state='readonly',
                                           postcommand=lambda: self.__variable2_combo
                                           .configure(values=self.__data_manager.get_field_names()))
-        self.__variable2_combo.grid(row=2, column=3, padx=5, pady=5)
+        self.__variable2_combo.grid(row=2, column=4, padx=5, pady=5)
         style_select_combo3 = tkinter.StringVar()
         self.__style_combo = Combobox(action_frame, textvariable=style_select_combo3, values=style.available,
                                       state='readonly')
-        self.__style_combo.grid(row=1, column=6, rowspan=2, padx=5, pady=5)
+        self.__style_combo.grid(row=1, column=7, rowspan=2, padx=5, pady=5)
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
@@ -177,6 +181,9 @@ class PlotFrame(tkinter.Frame):
             self.__data_manager.read_csv_file(filename, input_dialog.get_input_options())
         else:
             logger.log(logging.ERROR, "[PlotFrame] No file selected")
+
+    def refresh_data(self):
+        """ Refresh data from the same csv file """
 
     def display_data(self):
         """ display csv data in a CsvFrame """

@@ -35,6 +35,8 @@ class PlotCreator:
         create a plot from a list of data
     plot_from_multiple_data(x_data, y_multiple_data, x_axis, y_multiple_axis, x_unit="", y_unit="")
         create a list of plots from multiple list of data
+    refresh_plots()
+        refresh all the plot
     __create_plot(x_data, y_data, x_axis, y_axis, x_unit="", y_unit="")
         create a plot
     """
@@ -193,6 +195,14 @@ class PlotCreator:
             plots_list.append(self.__create_plot(x_data, y_multiple_data[i], x_axis, y_multiple_axis[i],
                                                  x_unit, y_unit))
         return plots_list
+
+    def refresh_plots(self, data_manager):
+        logger.log(logging.DEBUG, "[PlotCreator] Refresh plots data")
+        for plot in self.__plots_dict.values():
+            if plot.get_x_axis() in data_manager.get_field_names() \
+                    and plot.get_y_axis() in data_manager.get_field_names():
+                plot.set_x(data_manager.get_data_from_field_name(plot.get_x_axis()))
+                plot.set_y(data_manager.get_data_from_field_name(plot.get_y_axis()))
 
     def __create_plot(self, x_data, y_data, x_axis, y_axis, x_unit="", y_unit=""):
         """ Create a plot

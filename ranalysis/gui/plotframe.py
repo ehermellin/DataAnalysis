@@ -184,6 +184,10 @@ class PlotFrame(tkinter.Frame):
 
     def refresh_data(self):
         """ Refresh data from the same csv file """
+        if self.__data_manager.manager_have_data():
+            self.__data_manager.refresh_data()
+            PlotCreator.get_instance().refresh_plots(self.__data_manager)
+            self.on_list_select(None)
 
     def display_data(self):
         """ display csv data in a CsvFrame """
@@ -193,12 +197,15 @@ class PlotFrame(tkinter.Frame):
     def add_plot(self):
         """ add_button action to add created plot in the list """
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
-            plot_f = PlotCreator.get_instance()
-            plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
-                                               [self.__variable2_combo.get()])
-            logger.log(logging.DEBUG, "[PlotFrame] Add plot: " + str(plot[0]))
-            self.__plot_list.insert(tkinter.END, plot[0])
-            self.__variable1_combo["state"] = 'disabled'
+            if self.__data_manager.manager_have_data():
+                plot_f = PlotCreator.get_instance()
+                plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
+                                                   [self.__variable2_combo.get()])
+                logger.log(logging.DEBUG, "[PlotFrame] Add plot: " + str(plot[0]))
+                self.__plot_list.insert(tkinter.END, plot[0])
+                self.__variable1_combo["state"] = 'disabled'
+            else:
+                logger.log(logging.ERROR, "[PlotFrame] Data manager does not have data")
         else:
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
@@ -224,9 +231,8 @@ class PlotFrame(tkinter.Frame):
     def on_list_select(self, evt):
         """ Display plots when plots are selected in the list (triggered by event on the list) """
         plot_ids = []
-        widget_list = evt.widget
-        for idx in widget_list.curselection():
-            plot_ids.append(widget_list.get(idx))
+        for idx in self.__plot_list.curselection():
+            plot_ids.append(self.__plot_list.get(idx))
 
         if len(plot_ids) > 0:
             graph_from_plot_ids(self.__graph, plot_ids)

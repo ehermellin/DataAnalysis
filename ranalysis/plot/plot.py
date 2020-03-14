@@ -32,6 +32,10 @@ class Plot:
         return the plot id (int)
     get_x()
         return x data (list)
+    set_x(x_data)
+        set x data
+    set_y(y_data)
+        set y data
     get_y()
         return y data (list)
     get_x_axis()
@@ -102,6 +106,16 @@ class Plot:
         """
         return self.__x
 
+    def set_x(self, x_data):
+        """ Set x data
+
+        Parameters
+        ------
+        x_data
+            the x data
+        """
+        self.__x = x_data
+
     def get_y(self):
         """ Get y data
 
@@ -111,6 +125,16 @@ class Plot:
             the y data
         """
         return self.__y
+
+    def set_y(self, y_data):
+        """ Set y data
+
+        Parameters
+        ------
+        y_data
+            the y data
+        """
+        self.__y = y_data
 
     def get_x_axis(self):
         """ Get x axis label

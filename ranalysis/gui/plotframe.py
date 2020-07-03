@@ -47,6 +47,8 @@ class PlotFrame(tkinter.Frame):
         customize_button action to change the matplotlib plot style
     remove_plot()
         remove_button action to remove selected plot from the list
+    clear_plot()
+        clear_button action to clear/reset the plot frame
     on_list_select(evt)
         display plots when plots are selected in the list (triggered by event on the list)
     add_title()
@@ -95,6 +97,7 @@ class PlotFrame(tkinter.Frame):
         title_button = Button(action_frame, text="Add title", command=self.add_title, width=15)
         title_button.grid(row=2, column=5, rowspan=1, padx=5, pady=5)
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=15)
+        clear_button = Button(list_frame, text="Clear all plots", command=self.clear_plot, width=15)
 
         # label
         label_x = Label(action_frame, text="Choose x axis: ")
@@ -130,7 +133,8 @@ class PlotFrame(tkinter.Frame):
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
-        remove_button.pack(padx=10, pady=10)
+        remove_button.pack(padx=10, pady=5)
+        clear_button.pack(padx=10, pady=10)
 
         # plot
         self.create_plot()
@@ -228,6 +232,12 @@ class PlotFrame(tkinter.Frame):
         if self.__plot_list.size() == 0:
             self.__variable1_combo["state"] = 'readonly'
 
+    def clear_plot(self):
+        """ clear/reset the plot frame """
+        logger.log(logging.ERROR, "[PlotFrame] Clear all plots")
+        clear(self.__graph)
+        self.__canvas.draw()
+
     def on_list_select(self, evt):
         """ Display plots when plots are selected in the list (triggered by event on the list) """
         plot_ids = []
@@ -238,8 +248,7 @@ class PlotFrame(tkinter.Frame):
             graph_from_plot_ids(self.__graph, plot_ids)
             self.__canvas.draw()
         else:
-            clear(self.__graph)
-            self.__canvas.draw()
+            self.clear_plot()
 
     def add_title(self):
         """ Add title to the graph"""

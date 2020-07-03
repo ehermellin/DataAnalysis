@@ -79,15 +79,31 @@ class CsvFrame:
         scrollbar_x.config(command=self.tree.xview)
         scrollbar_x.pack(side=tkinter.BOTTOM, fill=tkinter.X)
 
-        for field_name in manager.get_field_names():
+        self.fill_data()
+
+        self.tree.pack(expand=True, fill=tkinter.BOTH)
+
+    def clear_data(self):
+        """ clear data in Treeview """
+        logger.log(logging.DEBUG, "[CsvFrame] Clear data in TreeView")
+        for i in self.tree.get_children():
+            self.tree.delete(i)
+
+    def fill_data(self):
+        """ fill data in Treeview """
+        logger.log(logging.DEBUG, "[CsvFrame] Fill data in TreeView")
+
+        self.clear_data()
+
+        for field_name in self.__manager.get_field_names():
             self.tree.heading(field_name, text=field_name, anchor=tkinter.W)
             self.tree.column(field_name, stretch=tkinter.YES)
 
-        for entry in manager.get_data_tuple():
+        for entry in self.__manager.get_data_tuple():
             self.tree.insert("", 'end', values=entry)
-        self.tree.pack(expand=True, fill=tkinter.BOTH)
 
     def on_tree_select(self, event):
+        """ event when selecting data in Treeview """
         list_values = self.tree.item(self.tree.selection())['values']
         if self.combo_x.get() != "" and self.combo_y.get() != "":
             index_x = self.__manager.get_field_names().index(self.combo_x.get())

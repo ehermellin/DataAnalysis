@@ -69,6 +69,7 @@ class PlotFrame(tkinter.Frame):
         self.__canvas = None
         self.__graph = None
         self.__graph_frame = None
+        self.csv_frame = None
         self.initialize()
 
     def initialize(self):
@@ -192,11 +193,13 @@ class PlotFrame(tkinter.Frame):
             self.__data_manager.refresh_data()
             PlotCreator.get_instance().refresh_plots(self.__data_manager)
             self.on_list_select(None)
+            if self.csv_frame is not None:
+                self.csv_frame.fill_data()
 
     def display_data(self):
         """ display csv data in a CsvFrame """
         if self.__data_manager.manager_have_data():
-            CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
+            self.csv_frame = CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
 
     def add_plot(self):
         """ add_button action to add created plot in the list """
@@ -234,7 +237,7 @@ class PlotFrame(tkinter.Frame):
 
     def clear_plot(self):
         """ clear/reset the plot frame """
-        logger.log(logging.ERROR, "[PlotFrame] Clear all plots")
+        logger.log(logging.DEBUG, "[PlotFrame] Clear all plots")
         clear(self.__graph)
         self.__canvas.draw()
 

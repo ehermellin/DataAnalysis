@@ -32,18 +32,18 @@ It is important to notice the content of the line in the csv file:
 
 Clone the repository or download a zip file from Gitlab, go to the folder and simply run the following command in the *cmd* (Windows) or *terminal* (Linux / MacOs):
 
-	python run.py -gui
+	python ranalysis.py -gui
 
 #### CLI
 
 Clone the repository or download a zip file from Gitlab, go to the folder and simply run one of the following command in the *cmd* (Windows) or *terminal* (Linux / MacOs):
     
     # Display variable x and variable y in a plot
-	python run.py -f <path_to_csv_file> -x <x_variable_name> -y <y_variable_name>
+	python ranalysis.py -f <path_to_csv_file> -x <x_variable_name> -y <y_variable_name>
 	# Display variable x and variables y1, y2, ...  in a plot
-	python run.py -f <path_to_csv_file> -x <x_variable_name> -my <y_variable_name1,y_variable_name2>
+	python ranalysis.py -f <path_to_csv_file> -x <x_variable_name> -my <y_variable_name1,y_variable_name2>
 	# Display usage / help
-	python run.py -h
+	python ranalysis.py -h
 
 ### Library
 
@@ -53,8 +53,9 @@ Clone the repository or download a zip file from Gitlab, go to the folder and si
 
     # Build RAnalysis source distribution package
     python setup.py sdist
-    # Build RAnalysis binary distribution package
+    # Build RAnalysis binary distribution package (example with Windows below)
     python setup.py bdist
+    python setup.py bdist --formats=wininst
     # Generate RAnalysis pydoc
     pydoc -w <name>
 

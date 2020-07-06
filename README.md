@@ -65,6 +65,15 @@ From the **dist** folder, copy the content of the zip file in your *site-package
 
 #### Use the library (How to ?)
 
+##### Launch the GUI
+
+```python
+from ranalysis.gui.ranalysisframe import RAnalysisFrame
+
+app = RAnalysisFrame(None)
+app.mainloop()
+```
+
 ##### Read CSV file
 
 To manage data from csv file (as defined previously), it is possible to use the DataManager object:

@@ -13,7 +13,7 @@ from ranalysis.gui.plotframe import PlotFrame
 from ranalysis.log.loghandler import logger
 
 
-class MainFrame(tkinter.Tk):
+class RAnalysisFrame(tkinter.Tk):
     """ Main GUI window: Display menu and PlotFrame
 
     Attributes

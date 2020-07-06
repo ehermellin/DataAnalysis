@@ -7,7 +7,7 @@ import argparse
 import logging
 
 from ranalysis.cli.clihandler import CliHandler
-from ranalysis.gui.mainframe import MainFrame
+from ranalysis.gui.ranalysisframe import RAnalysisFrame
 from ranalysis.log.loghandler import logger
 
 if __name__ == "__main__":
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     if args.gui:
         logger.log(logging.INFO, "-- Running RAnalysis GUI version")
         parser.print_usage()
-        app = MainFrame(None)
+        app = RAnalysisFrame(None)
         app.mainloop()
     else:
         logger.log(logging.INFO, "-- Running RAnalysis CLI version")

@@ -30,6 +30,8 @@ class CliHandler:
 
         Methods
         -------
+        read_data(fil_path, options)
+            read data from file_path with csv options
         show_from_fieldname(x_fieldname, y_fieldname)
             show plot from data field name (x-axis and y-axis)
         show_from_fieldnames(x_fieldname, y_fieldnames)
@@ -46,17 +48,32 @@ class CliHandler:
         options : dict
             the options to read the csv file
         """
-        if options is None:
-            options = {'delimiter': ';', 'unit': 1}
         self.log_queue = queue.Queue()
         self.queue_handler = QueueHandler(self.log_queue)
         self.queue_handler.setFormatter(logging.Formatter('%(asctime)s: %(message)s'))
         logger.addHandler(self.queue_handler)
 
         style.use('ggplot')
+        self.__data_manager = None
         self.__file_path = file_path
-        self.__data_manager = DataManager()
+        self.read_data(file_path, options)
+
+    def read_data(self, file_path, options=None):
+        """ Read data from file_path with csv options
+
+        Parameters
+        ----------
+        file_path : str
+            the file path to the csv file
+        options : dict
+            the options to read the csv file
+        """
+        logger.log(logging.DEBUG, "[CliHandler] Read data from " + file_path)
+        if options is None:
+            options = {'delimiter': ';', 'unit': 1}
+
         if self.__file_path:
+            self.__data_manager = DataManager()
             self.__data_manager.read_csv_file(file_path, options)
 
     def show_from_fieldname(self, x_fieldname, y_fieldname):
@@ -69,10 +86,13 @@ class CliHandler:
         y_fieldname : str
             the fieldname of the y-axis variable to plot
         """
-        logger.log(logging.DEBUG, "[CliHandler] show from field name " + x_fieldname + " " + y_fieldname)
-        fig, ax = plt.subplots()
-        graph_from_fieldname(ax, self.__data_manager, x_fieldname, y_fieldname)
-        plt.show()
+        if self.__data_manager is not None:
+            logger.log(logging.DEBUG, "[CliHandler] Show from field name " + x_fieldname + " " + y_fieldname)
+            fig, ax = plt.subplots()
+            graph_from_fieldname(ax, self.__data_manager, x_fieldname, y_fieldname)
+            plt.show()
+        else:
+            logger.log(logging.DEBUG, "[CliHandler] No data to show")
 
     def show_from_fieldnames(self, x_fieldname, y_fieldnames):
         """ Plot multiple data from fieldnames in a plt matplotlib object
@@ -84,7 +104,10 @@ class CliHandler:
         y_fieldnames : list(str)
             the list of fieldname of the y-axis variable to plot
         """
-        logger.log(logging.DEBUG, "[CliHandler] show from field names " + x_fieldname + " " + str(y_fieldnames))
-        fig, ax = plt.subplots()
-        graph_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
-        plt.show()
+        if self.__data_manager is not None:
+            logger.log(logging.DEBUG, "[CliHandler] Show from field names " + x_fieldname + " " + str(y_fieldnames))
+            fig, ax = plt.subplots()
+            graph_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
+            plt.show()
+        else:
+            logger.log(logging.DEBUG, "[CliHandler] No data to show")

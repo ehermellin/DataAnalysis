@@ -37,6 +37,10 @@ class DataManager:
             get unit from data field name
         get_data_from_field_name(field_name)
             get data from data field name
+        refresh_data()
+            refresh the data
+        clear_data()
+            clear the data
         reset_manager()
             reset the data manager
         __copy_and_adapt_data(data)
@@ -74,6 +78,7 @@ class DataManager:
         """
         self.__filename = filename
         self.__reading_options = options
+        self.clear_data()
         logger.log(logging.DEBUG, "[DataManager] " + self.__filename + " " + str(self.__reading_options))
         with open(self.__filename, 'rU') as infile:
             # read the file as a dictionary for each row ({header : value})
@@ -168,13 +173,21 @@ class DataManager:
             logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
             return list()
 
+    def clear_data(self):
+        """ Clear data """
+        logger.log(logging.DEBUG, "[DataManager] Clear data")
+        self.__fieldnames = []
+        self.__data = {}
+        self.__data_values_as_list_tuple = []
+
     def refresh_data(self):
         """ Refresh data from the same data file """
         if self.__filename != "":
-            self.__fieldnames = []
-            self.__data = {}
-            self.__data_values_as_list_tuple = []
+            logger.log(logging.DEBUG, "[DataManager] Refresh data")
+            self.clear_data()
             self.read_csv_file(self.__filename, self.__reading_options)
+        else:
+            logger.log(logging.DEBUG, "[DataManager] Cannot refresh data because no data file is defined")
 
     def reset_manager(self):
         """ Reset the data manager """

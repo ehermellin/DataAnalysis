@@ -260,6 +260,9 @@ class PlotFrame(tkinter.Frame):
             graph_add_title(self.__graph, title)
             self.__canvas.draw()
 
+    def reset_csvframe(self):
+        self.csv_frame = None
+
     def __reset_plotframe(self):
         """ Reset plot frame attributes """
         self.__variable1_combo.set('')

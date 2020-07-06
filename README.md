@@ -61,13 +61,51 @@ Clone the repository or download a zip file from Gitlab, go to the folder and si
 
 #### Install the library
 
-After generating binary distribution package, copy the content of the zip file in your *site-packages* folder (it can be found in the *lib* Python folder).
+From the **dist** folder, copy the content of the zip file in your *site-packages* folder (it can be found in the *lib* Python folder) or use the exe file (only for Windows).
 
 #### Use the library (How to ?)
 
 ##### Read CSV file
 
+To manage data from csv file (as defined previously), it is possible to use the DataManager object:
+
+```python
+options = {'delimiter': ';', 'unit': 1}
+
+data_manager = DataManager()
+data_manager.read_csv_file(file_path, options)
+```
+
+After, you have access to:
+
+```python
+data_manager.get_data_tuple()  # Get the data as a list of tuple
+data_manager.get_field_names() # Get the list of data field names
+data_manager.get_unit_from_field_name(field_name) # Get unit from data field name
+data_manager.get_data_from_field_name(field_name) # Get data from data field name
+```
+
 ##### Create Plot object
+
+You can use PlotCreator (singleton) object to create plot object (matplotlib plot):
+
+```python
+plot_factory = PlotCreator.get_instance()
+
+plot = plot_factory.plot_from_fieldname(data_manager, x_data_name, y_data_name)
+plot = plot_factory.plot_from_fieldnames(data_manager, x_data_name, y_data_names)
+plot = plot_factory.plot_from_data(x_data, y_data, x_axis, y_axis, x_unit, y_unit)
+plot = plot_factory.plot_from_multiple_data(x_data, y_multiple_data, x_axis, y_multiple_axis, x_unit, y_unit)
+plot.show()
+```
 
 ##### Plot data
 
+To ease the display of a graph from data, you can use CliHandler object:
+
+```python
+cli_handler = CliHandler(file_path, options)
+
+cli_handler.show_from_fieldname(x_fieldname, y_fieldname)
+cli_handler.show_from_fieldnames(x_fieldname, y_fieldnames)
+```

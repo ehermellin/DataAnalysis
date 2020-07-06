@@ -82,6 +82,7 @@ class CsvFrame:
         self.fill_data()
 
         self.tree.pack(expand=True, fill=tkinter.BOTH)
+        self.top.protocol("WM_DELETE_WINDOW", self.quit)
 
     def clear_data(self):
         """ clear data in Treeview """
@@ -133,4 +134,5 @@ class CsvFrame:
 
     def quit(self):
         """ Destroy the frame """
+        self.__parent.reset_csvframe()
         self.top.destroy()

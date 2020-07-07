@@ -97,6 +97,10 @@ class RAnalysisFrame(tkinter.Tk):
 
     def how_to_command(self):
         """ how_to_command action of the menu displaying some "how to" questions """
+        messagebox.showinfo("How to ?", " - Create independent tabs to analyze data\n"
+                                        " - Load data\n"
+                                        " - Choose x and y axis then add the graph to the list\n"
+                                        " - Select in the list, all the graphs to display")
         pass
 
     def about_command(self):

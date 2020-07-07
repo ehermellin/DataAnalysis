@@ -239,6 +239,7 @@ class PlotFrame(tkinter.Frame):
         """ clear/reset the plot frame """
         logger.log(logging.DEBUG, "[PlotFrame] Clear all plots")
         clear(self.__graph)
+        self.__plot_list.selection_clear(0, tkinter.END)
         self.__canvas.draw()
 
     def on_list_select(self, evt):
@@ -261,6 +262,7 @@ class PlotFrame(tkinter.Frame):
             self.__canvas.draw()
 
     def reset_csvframe(self):
+        """ Reset csv frame """
         self.csv_frame = None
 
     def __reset_plotframe(self):

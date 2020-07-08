@@ -79,6 +79,8 @@ app.mainloop()
 To manage data from csv file (as defined previously), it is possible to use the DataManager object:
 
 ```python
+from ranalysis.data.datamanager import DataManager
+
 options = {'delimiter': ';', 'unit': 1}
 
 data_manager = DataManager()
@@ -99,6 +101,8 @@ data_manager.get_data_from_field_name(field_name) # Get data from data field nam
 You can use PlotCreator (singleton) object to create plot object (matplotlib plot):
 
 ```python
+from ranalysis.plot.plotcreator import PlotCreator
+
 plot_factory = PlotCreator.get_instance()
 
 plot = plot_factory.plot_from_fieldname(data_manager, x_data_name, y_data_name)
@@ -113,6 +117,8 @@ plot.show()
 To ease the display of a graph from data, you can use CliHandler object:
 
 ```python
+from ranalysis.cli.clihandler import CliHandler
+
 cli_handler = CliHandler(file_path, options)
 
 cli_handler.show_from_fieldname(x_fieldname, y_fieldname)

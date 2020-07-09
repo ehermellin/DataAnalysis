@@ -13,6 +13,8 @@ class Plot:
     ----------
     __plot_id : int
         the plot id (unique)
+    __name : str
+        the name of the plot
     __x :  list (int, float, ...)
         list of data (x-axis)
     __y : list (int, float, ...)
@@ -30,6 +32,8 @@ class Plot:
     -------
     get_plot_id()
         return the plot id (int)
+    set_name(name)
+        set the name of the plot
     get_x()
         return x data (list)
     set_x(x_data)
@@ -69,6 +73,7 @@ class Plot:
             the unit of the x-axis ("")
         """
         self.__plot_id = plot_id
+        self.__name = ""
         self.__x = x
         self.__y = y
         self.__x_axis = x_axis
@@ -84,7 +89,7 @@ class Plot:
         str
             a stringify version of the plot
         """
-        return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "]"
+        return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "] " + self.__name
 
     def get_plot_id(self):
         """ Get plot id
@@ -95,6 +100,16 @@ class Plot:
             the plot id
         """
         return self.__plot_id
+
+    def set_name(self, name):
+        """ Set name
+
+        Parameters
+        ------
+        name
+            the name
+        """
+        self.__name = name
 
     def get_x(self):
         """ Get x data

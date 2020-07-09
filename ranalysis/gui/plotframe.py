@@ -14,6 +14,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 from ranalysis.data.datamanager import DataManager
+from ranalysis.gui.functiondialog import FunctionDialog
 from ranalysis.gui.csvframe import CsvFrame
 from ranalysis.gui.inputdialog import InputDialog
 from ranalysis.log.loghandler import logger
@@ -75,8 +76,12 @@ class PlotFrame(tkinter.Frame):
     def initialize(self):
         """ Initialize all the tkinter objects """
         # frame
-        action_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
-        action_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10, pady=10)
+        top_frame = tkinter.Frame(self)
+        top_frame.pack(side=tkinter.TOP, fill=tkinter.X)
+        action_frame = tkinter.Frame(top_frame, borderwidth=2, relief=tkinter.GROOVE)
+        action_frame.pack(side=tkinter.LEFT, fill=tkinter.X, padx=10, pady=10)
+        customize_frame = tkinter.Frame(top_frame, borderwidth=2, relief=tkinter.GROOVE, width=100)
+        customize_frame.pack(side=tkinter.RIGHT, fill=tkinter.X, padx=10, pady=10)
 
         list_frame = tkinter.Frame(self, borderwidth=2, relief=tkinter.GROOVE)
         list_frame.pack(side=tkinter.LEFT, fill=tkinter.Y, padx=10, pady=10)
@@ -86,27 +91,33 @@ class PlotFrame(tkinter.Frame):
 
         # button
         load_button = Button(action_frame, text="Load data", command=self.load_data, width=35)
-        load_button.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
+        load_button.grid(row=1, column=1, columnspan=2, rowspan=1, padx=5, pady=5)
         refresh_button = Button(action_frame, text="Refresh data", command=self.refresh_data, width=15)
         refresh_button.grid(row=2, column=1, padx=5, pady=5)
         display_button = Button(action_frame, text="Display data", command=self.display_data, width=15)
         display_button.grid(row=2, column=2, padx=5, pady=5)
         add_button = Button(action_frame, text="Add plot", command=self.add_plot, width=15)
         add_button.grid(row=1, column=5, rowspan=1, padx=5, pady=5)
-        customize_button = Button(action_frame, text="Customize plot", command=self.customize_plot, width=15)
-        customize_button.grid(row=1, column=8, rowspan=2, padx=5, pady=5)
         title_button = Button(action_frame, text="Add title", command=self.add_title, width=15)
         title_button.grid(row=2, column=5, rowspan=1, padx=5, pady=5)
+
+        customize_button = Button(customize_frame, text="Customize plot", command=self.customize_plot, width=35)
+        customize_button.grid(row=2, column=1, columnspan=2, rowspan=1, padx=5, pady=5)
+
+        function_button = Button(action_frame, text="Plot math function", command=self.add_plot_function, width=35)
+        function_button.grid(row=1, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
+        clear_button = Button(action_frame, text="Clear all plots", command=self.clear_plot, width=35)
+        clear_button.grid(row=2, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
+
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=15)
-        clear_button = Button(list_frame, text="Clear all plots", command=self.clear_plot, width=15)
 
         # label
         label_x = Label(action_frame, text="Choose x axis: ")
         label_x.grid(row=1, column=3, padx=5, pady=5)
         label_y = Label(action_frame, text="Choose y axis: ")
         label_y.grid(row=2, column=3, padx=5, pady=5)
-        label_style = Label(action_frame, text="Choose style: ")
-        label_style.grid(row=1, column=6, rowspan=2, padx=5, pady=5)
+        label_style = Label(customize_frame, text="Choose style: ")
+        label_style.grid(row=1, column=1, rowspan=1, padx=5, pady=5)
 
         # list
         self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE, exportselection=False)
@@ -128,17 +139,23 @@ class PlotFrame(tkinter.Frame):
                                           .configure(values=self.__data_manager.get_field_names()))
         self.__variable2_combo.grid(row=2, column=4, padx=5, pady=5)
         style_select_combo3 = tkinter.StringVar()
-        self.__style_combo = Combobox(action_frame, textvariable=style_select_combo3, values=style.available,
+        self.__style_combo = Combobox(customize_frame, textvariable=style_select_combo3, values=style.available,
                                       state='readonly')
-        self.__style_combo.grid(row=1, column=7, rowspan=2, padx=5, pady=5)
+        self.__style_combo.grid(row=1, column=2, rowspan=1, padx=5, pady=5)
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
         remove_button.pack(padx=10, pady=5)
-        clear_button.pack(padx=10, pady=10)
 
         # plot
         self.create_plot()
+
+    def add_plot_function(self):
+        """ Create plot from math functions to validate data """
+        compare_dialog = FunctionDialog(self)
+        self.wait_window(compare_dialog.top)
+        if compare_dialog.get_plot() is not None:
+            self.__plot_list.insert(tkinter.END, compare_dialog.get_plot())
 
     def create_plot(self, name_style='ggplot'):
         """ Create a matplotlib plot in a tkinter environment """
@@ -168,7 +185,7 @@ class PlotFrame(tkinter.Frame):
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
     def load_data(self):
-        """ load_button action to load data from a csv file """
+        """ Load data from a csv file """
 
         filename = askopenfilename(title="Open data file", filetypes=[('csv files', '.csv'), ('all files', '.*')])
 
@@ -197,12 +214,12 @@ class PlotFrame(tkinter.Frame):
                 self.csv_frame.fill_data()
 
     def display_data(self):
-        """ display csv data in a CsvFrame """
+        """ Display csv data in a CsvFrame """
         if self.__data_manager.manager_have_data():
             self.csv_frame = CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
 
     def add_plot(self):
-        """ add_button action to add created plot in the list """
+        """ Add_button action to add created plot in the list """
         if self.__variable1_combo.get() != "" and self.__variable2_combo.get() != "":
             if self.__data_manager.manager_have_data():
                 plot_f = PlotCreator.get_instance()
@@ -217,13 +234,13 @@ class PlotFrame(tkinter.Frame):
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
     def customize_plot(self):
-        """ customize_button action to change the matplotlib plot style """
+        """ Change the matplotlib plot style """
         if self.__style_combo.get() != "":
             logger.log(logging.DEBUG, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
 
     def remove_plot(self):
-        """ remove_button action to remove selected plot from the list """
+        """ Remove selected plot from the list """
         if self.__plot_list.size() > 0:
             logger.log(logging.DEBUG, "[PlotFrame] Remove plot")
             idxs = self.__plot_list.curselection()
@@ -236,7 +253,7 @@ class PlotFrame(tkinter.Frame):
             self.__variable1_combo["state"] = 'readonly'
 
     def clear_plot(self):
-        """ clear/reset the plot frame """
+        """ Clear/reset the plot frame """
         logger.log(logging.DEBUG, "[PlotFrame] Clear all plots")
         clear(self.__graph)
         self.__plot_list.selection_clear(0, tkinter.END)

@@ -12,5 +12,5 @@ setup(
     author='Emmanuel Hermellin',
     author_email='emmanuel.hermellin@onera.fr',
     packages=find_packages(exclude=['tests']),
-    zip_safe=False, install_requires=['matplotlib', 're', 'logging', 'csv', 'queue', 'tkinter']
+    zip_safe=False, install_requires=['numpy', 'matplotlib', 're', 'logging', 'csv', 'queue', 'tkinter']
 )

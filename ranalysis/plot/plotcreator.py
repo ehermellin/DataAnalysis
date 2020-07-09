@@ -4,6 +4,8 @@
 """ This file contains the singleton PlotCreator class """
 
 import logging
+import re
+import numpy as np
 
 from ranalysis.log.loghandler import logger
 from ranalysis.plot.plot import Plot
@@ -23,6 +25,8 @@ class PlotCreator:
     -------
     get_instance()
         return the instance of PlotCreator
+    string_to_function(string_function)
+        return a math function from a string
     get_plots_dict()
         return the plot dictionary
     get_plot_from_id(plot_id)
@@ -58,6 +62,52 @@ class PlotCreator:
             PlotCreator.__instance = self
             self.__plots_dict = {}
             self.__counter = 0
+            self.__replacements = {
+                "sin": "np.sin",
+                "cos": "np.cos",
+                "exp": "np.exp",
+                "sqrt": "np.sqrt",
+                "^": "**",
+                "pi": "np.pi"
+            }
+
+            self.__allowed_words = [
+                "x",
+                "sin",
+                "cos",
+                "sqrt",
+                "exp",
+                "pi"
+            ]
+
+    def string_to_function(self, string_function):
+        """ Evaluates the string and returns a function of x
+
+        Parameters
+        ----------
+        string_function : str
+            the string to eval
+
+        Returns
+        ------
+        func
+            the math function from string
+        """
+        # find all words and check if all are allowed:
+        for word in re.findall('[a-zA-Z_]+', string_function):
+            if word not in self.__allowed_words:
+                logger.log(logging.DEBUG, "[PlotCreator] " + word + " is forbidden to use in math expression")
+                raise ValueError(
+                    '"{}" is forbidden to use in math expression'.format(word)
+                )
+
+        for old, new in self.__replacements.items():
+            string_function = string_function.replace(old, new)
+
+        def func(x):
+            return eval(string_function)
+
+        return func
 
     def get_plots_dict(self):
         """ Get plots dictionary
@@ -139,7 +189,7 @@ class PlotCreator:
             plots_list.append(plot)
         return plots_list
 
-    def plot_from_data(self, x_data, y_data, x_axis, y_axis, x_unit="", y_unit=""):
+    def plot_from_data(self, x_data, y_data, x_axis="", y_axis="", x_unit="", y_unit=""):
         """ Create a plot from data
 
         Parameters

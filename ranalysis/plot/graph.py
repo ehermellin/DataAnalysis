@@ -3,6 +3,7 @@
 
 """ This file can be imported as a module and contains graph functions :
 
+    * graph_from_function - create plot from math functions
     * graph_from_fieldname - plot data from fieldname in a matplotlib object
     * graph_from_fieldnames - plot multiple data from fieldnames in a matplotlib object
     * graph_from_plots - plot list of plots objects in a matplotlib object
@@ -20,6 +21,22 @@ import re
 
 from ranalysis.log.loghandler import logger
 from ranalysis.plot.plotcreator import PlotCreator
+
+
+def graph_from_function(ax, function_list):
+    """ Plot data from fieldname in a matplotlib object
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    function_list : list(function)
+        the list of function to plot
+    """
+    logger.log(logging.DEBUG, "[Graph] Graph from function")
+    for func in function_list:
+        function_to_plot = PlotCreator.get_instance().string_to_function(func.get_function())
+        ax.plot(func.get_interval(), function_to_plot(func.get_interval()))
 
 
 def graph_from_fieldname(ax, manager, x_fieldname, y_fieldname):
@@ -170,15 +187,11 @@ def plot(ax, plots_to_display):
     plots_to_display : list(plot)
         the list of plots to plot
     """
-    x_data = plots_to_display[0].get_x()
     ax.clear()
     ax.set_xlabel(plots_to_display[0].get_x_axis() + " [" + plots_to_display[0].get_x_unit() + "]")
 
     for plot_tm in plots_to_display:
-        label = plot_tm.get_y_axis() + "[" + plot_tm.get_y_unit() + "]"
-        if len(x_data) == len(plot_tm.get_y()):
-            ax.plot(x_data, plot_tm.get_y(), label=label, alpha=0.50)
-        else:
-            logger.log(logging.ERROR, "[Graph] x and y data do not have the same size")
+        label = plot_tm.get_y_axis() + " [" + plot_tm.get_y_unit() + "]"
+        ax.plot(plot_tm.get_x(), plot_tm.get_y(), label=label, alpha=0.50)
 
     ax.legend(loc='upper center', bbox_to_anchor=(1.05, 0.75), ncol=1, fancybox=True)

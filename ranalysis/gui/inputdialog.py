@@ -49,7 +49,7 @@ class InputDialog:
             self.__input_options['delimiter'] = self.__entry_box.get()
         self.__input_options['unit'] = self.__checkbox_var.get()
         self.top.destroy()
-        logger.log(logging.DEBUG, "[Input dialog] " + str(self.__input_options))
+        logger.log(logging.DEBUG, "[InputDialog] " + str(self.__input_options))
 
     def get_input_options(self):
         """ Get entry options """

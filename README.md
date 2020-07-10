@@ -130,6 +130,7 @@ graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label)
 graph_add_title(ax, title)
 graph_compare_plot(ax, plot1, plot2)
 graph_clear(ax)
+
 plt.show()
 ```
 

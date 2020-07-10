@@ -73,7 +73,7 @@ class RAnalysisFrame(tkinter.Tk):
         self.add_tab_command()
 
     def add_tab_command(self):
-        """ add_tab_command action of the menu creating new notebook tab """
+        """ Creating new notebook tab """
         self.__counter += 1
         tab = PlotFrame(self)
         title = simpledialog.askstring("Tab Title", "What is the title of the tab?", parent=self)
@@ -83,7 +83,7 @@ class RAnalysisFrame(tkinter.Tk):
         logger.log(logging.DEBUG, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):
-        """ remove_tab_command action of the menu removing selected notebook tab """
+        """ Removing selected notebook tab """
         self.__notebook.forget(self.__notebook.select())
         logger.log(logging.DEBUG, "[MainFrame] Remove tab")
 
@@ -96,7 +96,7 @@ class RAnalysisFrame(tkinter.Tk):
         self.__logger_frame = LoggerFrame(self)
 
     def how_to_command(self):
-        """ how_to_command action of the menu displaying some "how to" questions """
+        """ Displaying some "how to" questions """
         messagebox.showinfo("How to ?", " - Create independent tabs to analyze data\n"
                                         " - Load data\n"
                                         " - Choose x and y axis then add the graph to the list\n"
@@ -104,7 +104,7 @@ class RAnalysisFrame(tkinter.Tk):
         pass
 
     def about_command(self):
-        """ about_command action of the menu displaying RAnalysis informations """
+        """ Displaying RAnalysis informations """
         messagebox.showinfo("About", "RAnalaysis v0.1\n\nhttp://gitlab-dtis.onera/s2im/rgine/ranalysis")
         pass
 

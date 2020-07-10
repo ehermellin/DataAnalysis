@@ -16,7 +16,7 @@ class InputDialog:
     Attributes
     ----------
     parent : tkinter.Frame
-        the parent frame of the LoggerFrame
+        the parent frame of the InputDialog
 
     Methods
     -------

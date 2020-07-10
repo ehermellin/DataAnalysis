@@ -29,6 +29,8 @@ class PlotCreator:
         return a math function from a string
     get_plots_dict()
         return the plot dictionary
+    get_plot_from_stringify(plot_stringify):
+        return plot from its stringify version
     get_plot_from_id(plot_id)
         return a plot from the dictionary according to its id
     plot_from_fieldname(data_manager, x_data_name, y_data_name)
@@ -65,8 +67,14 @@ class PlotCreator:
             self.__replacements = {
                 "sin": "np.sin",
                 "cos": "np.cos",
+                "tan": "np.tan",
+                "arcsin": "np.arcsin",
+                "arccos": "np.arccos",
+                "arctan": "np.arctan",
                 "exp": "np.exp",
+                "ln": "np.log",
                 "sqrt": "np.sqrt",
+                "mod": "np.mod",
                 "^": "**",
                 "pi": "np.pi"
             }
@@ -75,8 +83,15 @@ class PlotCreator:
                 "x",
                 "sin",
                 "cos",
-                "sqrt",
+                "tan",
+                "arcsin",
+                "arccos",
+                "arctan",
                 "exp",
+                "ln",
+                "sqrt",
+                "mod",
+                "round",
                 "pi"
             ]
 
@@ -119,6 +134,24 @@ class PlotCreator:
         """
         return self.__plots_dict
 
+    def get_plot_from_stringify(self, plot_stringify):
+        """ Get plot from its stringify version
+
+                Parameters
+                ----------
+                plot_stringify : str
+                    the stringify of a plot
+
+                Returns
+                ------
+                plot
+                    the plot
+                """
+        pattern = re.search('id=(.+?) ', plot_stringify)
+        if pattern:
+            found = int(pattern.group(1))
+            return self.get_plot_from_id(found)
+
     def get_plot_from_id(self, plot_id):
         """ Get plot from the dictionary according to its id
 
@@ -133,6 +166,39 @@ class PlotCreator:
             the plot
         """
         return self.__plots_dict[plot_id]
+
+    def plot_from_function(self, function, xmin, xmax, discr, xlabel="", ylabel=""):
+        """ Create a plot from a mathematic function
+
+        Parameters
+        ----------
+        function : str
+            the mathematic function
+        xmin :  int
+            the x min
+        xmax : int
+            the x max
+        discr : int
+            the discretization of the interval between xmin and xmax
+        xlabel :  str
+            the name of the x label
+        ylabel : str
+            the name of the y label
+
+        Returns
+        ------
+        plot
+            the plot
+        """
+        func = self.string_to_function(str(function))
+        a = int(xmin)
+        b = int(xmax)
+        x_interval = np.linspace(a, b, int(discr)).tolist()
+        fx = []
+        for x in x_interval:
+            fx.append(func(x))
+
+        return self.plot_from_data(x_interval, fx, str(xlabel), str(ylabel))
 
     def plot_from_fieldname(self, data_manager, x_data_name, y_data_name):
         """ Create a plot from a variable fieldname
@@ -247,6 +313,13 @@ class PlotCreator:
         return plots_list
 
     def refresh_plots(self, data_manager):
+        """ Refresh the plots with new data
+
+        Parameters
+        ----------
+        data_manager :  DataManager
+            the data manager associated to the data
+        """
         logger.log(logging.DEBUG, "[PlotCreator] Refresh plots data")
         for plot in self.__plots_dict.values():
             if plot.get_x_axis() in data_manager.get_field_names() \

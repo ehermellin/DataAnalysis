@@ -11,7 +11,8 @@
     * graph_from_data - plot data in a matplotlib object
     * graph_from_multiple_data - plot multiple data in a matplotlib object
     * graph_add_title - add title to the graph
-    * clear - clear matplotlib axis object
+    * graph_compare_plot - compare two plots
+    * graph_clear - clear matplotlib axis object
     * plot - plot in matplotlib object
 
 """
@@ -37,6 +38,31 @@ def graph_from_function(ax, function_list):
     for func in function_list:
         function_to_plot = PlotCreator.get_instance().string_to_function(func.get_function())
         ax.plot(func.get_interval(), function_to_plot(func.get_interval()))
+
+
+def graph_from_function(ax, function, xmin, xmax, discr, xlabel="", ylabel=""):
+    """ Plot mathematic function
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    function : str
+        the mathematic function
+    xmin :  int
+        the x min
+    xmax : int
+        the x max
+    discr : int
+        the discretization of the interval between xmin and xmax
+    xlabel :  str
+        the name of the x label
+    ylabel : str
+        the name of the y label
+    """
+    logger.log(logging.DEBUG, "[Graph] Graph from function")
+    plots = [PlotCreator.get_instance().plot_from_function(function, xmin, xmax, discr, xlabel, ylabel)]
+    plot(ax, plots)
 
 
 def graph_from_fieldname(ax, manager, x_fieldname, y_fieldname):
@@ -166,7 +192,22 @@ def graph_add_title(ax, title):
     ax.set_title(title)
 
 
-def clear(ax):
+def graph_compare_plot(ax, plot1, plot2):
+    ax.clear()
+    ax.set_xlabel(plot1.get_x_axis() + " [" + plot1.get_x_unit() + "]")
+
+    label = plot1.get_y_axis() + " [" + plot1.get_y_unit() + "]"
+    ax.plot(plot1.get_x(), plot1.get_y(), label=label, alpha=0.50)
+
+    label = plot2.get_y_axis() + " [" + plot2.get_y_unit() + "]"
+    ax.plot(plot2.get_x(), plot2.get_y(), label=label, alpha=0.50)
+
+    ax.fill_between(plot1.get_x(), plot1.get_y(), plot2.get_y(), color='grey', alpha='0.3')
+
+    ax.legend(loc='upper center', bbox_to_anchor=(1.05, 0.75), ncol=1, fancybox=True)
+
+
+def graph_clear(ax):
     """ Clear matplotlib axis object
 
     Parameters

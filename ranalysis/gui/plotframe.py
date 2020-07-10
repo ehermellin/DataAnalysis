@@ -9,6 +9,7 @@ from tkinter import simpledialog
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button, Label
 
+import matplotlib.pyplot as plt
 from matplotlib import style
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -17,8 +18,9 @@ from ranalysis.data.datamanager import DataManager
 from ranalysis.gui.functiondialog import FunctionDialog
 from ranalysis.gui.csvframe import CsvFrame
 from ranalysis.gui.inputdialog import InputDialog
+from ranalysis.gui.plotdialog import PlotDialog
 from ranalysis.log.loghandler import logger
-from ranalysis.plot.graph import graph_from_plot_ids, clear, graph_add_title
+from ranalysis.plot.graph import graph_from_plot_ids, graph_clear, graph_add_title, graph_compare_plot
 from ranalysis.plot.plotcreator import PlotCreator
 
 
@@ -48,6 +50,8 @@ class PlotFrame(tkinter.Frame):
         customize_button action to change the matplotlib plot style
     remove_plot()
         remove_button action to remove selected plot from the list
+    compare_plot()
+        compare two plots in a graph
     clear_plot()
         clear_button action to clear/reset the plot frame
     on_list_select(evt)
@@ -70,6 +74,7 @@ class PlotFrame(tkinter.Frame):
         self.__canvas = None
         self.__graph = None
         self.__graph_frame = None
+        self.compare_button = None
         self.csv_frame = None
         self.initialize()
 
@@ -109,7 +114,9 @@ class PlotFrame(tkinter.Frame):
         clear_button = Button(action_frame, text="Clear all plots", command=self.clear_plot, width=35)
         clear_button.grid(row=2, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
 
-        remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=15)
+        remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=20)
+        self.compare_button = Button(list_frame, state=tkinter.DISABLED, text="Compare two plots",
+                                     command=self.compare_plots, width=20)
 
         # label
         label_x = Label(action_frame, text="Choose x axis: ")
@@ -146,6 +153,7 @@ class PlotFrame(tkinter.Frame):
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
         remove_button.pack(padx=10, pady=5)
+        self.compare_button.pack(padx=10, pady=5)
 
         # plot
         self.create_plot()
@@ -252,10 +260,19 @@ class PlotFrame(tkinter.Frame):
         if self.__plot_list.size() == 0:
             self.__variable1_combo["state"] = 'readonly'
 
+    def compare_plots(self):
+        """ Compare two plots in a graph """
+        plot_ids = []
+        for idx in self.__plot_list.curselection():
+            plot_ids.append(self.__plot_list.get(idx))
+
+        PlotDialog(self, PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0]),
+                   PlotCreator.get_instance().get_plot_from_stringify(plot_ids[1]))
+
     def clear_plot(self):
         """ Clear/reset the plot frame """
         logger.log(logging.DEBUG, "[PlotFrame] Clear all plots")
-        clear(self.__graph)
+        graph_clear(self.__graph)
         self.__plot_list.selection_clear(0, tkinter.END)
         self.__canvas.draw()
 
@@ -264,6 +281,11 @@ class PlotFrame(tkinter.Frame):
         plot_ids = []
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))
+
+        if len(self.__plot_list.curselection()) == 2:
+            self.compare_button['state'] = 'normal'
+        else:
+            self.compare_button['state'] = 'disabled'
 
         if len(plot_ids) > 0:
             graph_from_plot_ids(self.__graph, plot_ids)

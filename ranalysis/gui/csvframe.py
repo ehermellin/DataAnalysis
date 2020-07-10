@@ -16,7 +16,7 @@ class CsvFrame:
     Attributes
     ----------
     parent : tkinter.Frame
-        the parent frame of the LoggerFrame
+        the parent frame of the CsvFrame
     manager : DataManager
         the data manager
 
@@ -85,13 +85,13 @@ class CsvFrame:
         self.top.protocol("WM_DELETE_WINDOW", self.quit)
 
     def clear_data(self):
-        """ clear data in Treeview """
+        """ Clear data in Treeview """
         logger.log(logging.DEBUG, "[CsvFrame] Clear data in TreeView")
         for i in self.tree.get_children():
             self.tree.delete(i)
 
     def fill_data(self):
-        """ fill data in Treeview """
+        """ Fill data in Treeview """
         logger.log(logging.DEBUG, "[CsvFrame] Fill data in TreeView")
 
         self.clear_data()
@@ -104,7 +104,7 @@ class CsvFrame:
             self.tree.insert("", 'end', values=entry)
 
     def on_tree_select(self, event):
-        """ event when selecting data in Treeview """
+        """ Event when selecting data in Treeview """
         list_values = self.tree.item(self.tree.selection())['values']
         if self.combo_x.get() != "" and self.combo_y.get() != "":
             index_x = self.__manager.get_field_names().index(self.combo_x.get())

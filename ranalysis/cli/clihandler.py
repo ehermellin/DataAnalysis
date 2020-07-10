@@ -11,7 +11,7 @@ from matplotlib import style
 
 from ranalysis.data.datamanager import DataManager
 from ranalysis.log.loghandler import logger, QueueHandler
-from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames
+from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames, graph_from_function
 
 
 class CliHandler:
@@ -32,6 +32,8 @@ class CliHandler:
         -------
         read_data(fil_path, options)
             read data from file_path with csv options
+        show_from_function(function, xmin, xmax, discr, xlabel, ylabel)
+            show plot from mathematic functions
         show_from_fieldname(x_fieldname, y_fieldname)
             show plot from data field name (x-axis and y-axis)
         show_from_fieldnames(x_fieldname, y_fieldnames)
@@ -75,6 +77,29 @@ class CliHandler:
         if self.__file_path:
             self.__data_manager = DataManager()
             self.__data_manager.read_csv_file(file_path, options)
+
+    def show_from_function(self, function, xmin, xmax, discr, xlabel="", ylabel=""):
+        """ Plot mathematic function
+
+        Parameters
+        ----------
+        function : str
+            the mathematic function
+        xmin :  int
+            the x min
+        xmax : int
+            the x max
+        discr : int
+            the discretization of the interval between xmin and xmax
+        xlabel :  str
+            the name of the x label
+        ylabel : str
+            the name of the y label
+        """
+        logger.log(logging.DEBUG, "[CliHandler] Plot function " + function)
+        fig, ax = plt.subplots()
+        graph_from_function(ax, function, xmin, xmax, discr, xlabel, ylabel)
+        plt.show()
 
     def show_from_fieldname(self, x_fieldname, y_fieldname):
         """ Plot data from fieldname in a plt matplotlib object

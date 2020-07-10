@@ -105,11 +105,32 @@ from ranalysis.plot.plotcreator import PlotCreator
 
 plot_factory = PlotCreator.get_instance()
 
+plot = plot_factory.plot_from_function(function, xmin, xmax, discr, xlabel, ylabel)
 plot = plot_factory.plot_from_fieldname(data_manager, x_data_name, y_data_name)
 plot = plot_factory.plot_from_fieldnames(data_manager, x_data_name, y_data_names)
 plot = plot_factory.plot_from_data(x_data, y_data, x_axis, y_axis, x_unit, y_unit)
 plot = plot_factory.plot_from_multiple_data(x_data, y_multiple_data, x_axis, y_multiple_axis, x_unit, y_unit)
-plot.show()
+```
+
+##### Use graph functions
+
+```python
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+
+graph_from_function(ax, function_list)
+graph_from_function(ax, function, xmin, xmax, discr, xlabel, ylabel)
+graph_from_fieldname(ax, manager, x_fieldname, y_fieldname)
+graph_from_fieldnames(ax, manager, x_fieldname, y_fieldnames)
+graph_from_plots(ax, list_plots)
+graph_from_plot_ids(ax, plot_ids)
+graph_from_data(ax, x_data, y_data, x_label, y_label)
+graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label)
+graph_add_title(ax, title)
+graph_compare_plot(ax, plot1, plot2)
+graph_clear(ax)
+plt.show()
 ```
 
 ##### Plot data
@@ -121,6 +142,7 @@ from ranalysis.cli.clihandler import CliHandler
 
 cli_handler = CliHandler(file_path, options)
 
+cli_handler.show_from_function(function, xmin, xmax, discr, xlabel, ylabel)
 cli_handler.show_from_fieldname(x_fieldname, y_fieldname)
 cli_handler.show_from_fieldnames(x_fieldname, y_fieldnames)
 ```

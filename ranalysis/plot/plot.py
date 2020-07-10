@@ -32,6 +32,8 @@ class Plot:
     -------
     get_plot_id()
         return the plot id (int)
+    get_name()
+        return name of the plot (str)
     set_name(name)
         set the name of the plot
     get_x()
@@ -90,6 +92,16 @@ class Plot:
             a stringify version of the plot
         """
         return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "] " + self.__name
+
+    def get_name(self):
+        """ Get plot name
+
+        Returns
+        ------
+        str
+            the name of the plot
+        """
+        return self.__name
 
     def get_plot_id(self):
         """ Get plot id

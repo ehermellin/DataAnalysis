@@ -4,7 +4,6 @@
 """ This file contains the FunctionDialog class """
 
 import logging
-import numpy as np
 import tkinter
 from tkinter.ttk import Label, Entry, Button
 
@@ -18,7 +17,7 @@ class FunctionDialog:
     Attributes
     ----------
     parent : tkinter.Frame
-        the parent frame of the LoggerFrame
+        the parent frame of the FunctionDialog
 
     Methods
     -------
@@ -85,17 +84,12 @@ class FunctionDialog:
 
     def create_plot_from_function(self):
         """ create plot from math functions """
-        logger.log(logging.DEBUG, "[CompareDialog] Creating plot from math function " + self.__entry_name.get())
-        func = PlotCreator.get_instance().string_to_function(str(self.__entry_function.get()))
-        a = int(self.__entry_xmin.get())
-        b = int(self.__entry_xmax.get())
-        x_interval = np.linspace(a, b, int(self.__entry_discr.get())).tolist()
-        fx = []
-        for x in x_interval:
-            fx.append(func(x))
+        logger.log(logging.DEBUG, "[FunctionDialog] Creating plot from math function " + self.__entry_name.get())
+        self.__plot = PlotCreator.get_instance().plot_from_function(self.__entry_function.get(),
+                                                                    self.__entry_xmin.get(), self.__entry_xmax.get(),
+                                                                    self.__entry_discr.get(), self.__entry_xlabel.get(),
+                                                                    self.__entry_ylabel.get())
 
-        self.__plot = PlotCreator.get_instance().plot_from_data(x_interval, fx, str(self.__entry_xlabel.get()),
-                                                                str(self.__entry_ylabel.get()))
         self.__plot.set_name(str(self.__entry_name.get()))
 
         self.quit()

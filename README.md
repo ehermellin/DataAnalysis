@@ -129,6 +129,8 @@ graph_from_data(ax, x_data, y_data, x_label, y_label)
 graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label)
 graph_add_title(ax, title)
 graph_compare_plot(ax, plot1, plot2)
+graph_compare_plot_diff(ax, plot1, plot2)
+graph_compare_plot_values(ax, plot1, plot2)
 graph_clear(ax)
 
 plt.show()

@@ -11,7 +11,9 @@
     * graph_from_data - plot data in a matplotlib object
     * graph_from_multiple_data - plot multiple data in a matplotlib object
     * graph_add_title - add title to the graph
-    * graph_compare_plot - compare two plots
+    * graph_compare_plot - fill between two plots (compare two plots)
+    * graph_compare_plot_diff - plot the diff between two plots
+    * graph_compare_plot_values - plot the diff values between two plots
     * graph_clear - clear matplotlib axis object
     * plot - plot in matplotlib object
 
@@ -193,18 +195,68 @@ def graph_add_title(ax, title):
 
 
 def graph_compare_plot(ax, plot1, plot2):
+    """ Fill between two plots (compare two plots)
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    plot1 : Plot
+        the first plot to compare
+    plot2 : Plot
+        the second plot to compare
+    """
     ax.clear()
-    ax.set_xlabel(plot1.get_x_axis() + " [" + plot1.get_x_unit() + "]")
 
-    label = plot1.get_y_axis() + " [" + plot1.get_y_unit() + "]"
-    ax.plot(plot1.get_x(), plot1.get_y(), label=label, alpha=0.50)
-
-    label = plot2.get_y_axis() + " [" + plot2.get_y_unit() + "]"
-    ax.plot(plot2.get_x(), plot2.get_y(), label=label, alpha=0.50)
+    plot(ax, [plot1, plot2])
 
     ax.fill_between(plot1.get_x(), plot1.get_y(), plot2.get_y(), color='grey', alpha='0.3')
 
     ax.legend(loc='upper center', bbox_to_anchor=(1.05, 0.75), ncol=1, fancybox=True)
+
+
+def graph_compare_plot_diff(ax, plot1, plot2):
+    """ Plot the diff between two plots
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    plot1 : Plot
+        the first plot to compare
+    plot2 : Plot
+        the second plot to compare
+    """
+    diff = []
+    compar_dif = []
+    for ii in range(len(plot1.get_x())):
+        diff.append(abs(plot1.get_y()[ii] - plot2.get_y()[ii]))
+        compar_dif.append(0)
+
+    label = "Difference between plots"
+
+    ax.plot(plot1.get_x(), diff, label=label, alpha=0.50)
+    ax.plot(plot1.get_x(), compar_dif, alpha=0.50)
+
+    ax.fill_between(plot1.get_x(), diff, compar_dif, color='red', alpha='0.3')
+
+
+def graph_compare_plot_values(ax, plot1, plot2):
+    """ Plot the diff values between two plots
+
+    Parameters
+    ----------
+    ax : Axis
+        the matplotlib axis object
+    plot1 : Plot
+        the first plot to compare
+    plot2 : Plot
+        the second plot to compare
+    """
+    ymin = min(plot1.get_y())
+    for ii in range(len(plot1.get_x())):
+        value = abs(plot1.get_y()[ii] - plot2.get_y()[ii])
+        ax.text(plot1.get_x()[ii] - 0.1, value, round(value, 2), size=8)
 
 
 def graph_clear(ax):
@@ -228,7 +280,7 @@ def plot(ax, plots_to_display):
     plots_to_display : list(plot)
         the list of plots to plot
     """
-    ax.clear()
+
     ax.set_xlabel(plots_to_display[0].get_x_axis() + " [" + plots_to_display[0].get_x_unit() + "]")
 
     for plot_tm in plots_to_display:

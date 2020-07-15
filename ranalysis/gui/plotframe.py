@@ -20,7 +20,7 @@ from ranalysis.gui.csvframe import CsvFrame
 from ranalysis.gui.inputdialog import InputDialog
 from ranalysis.gui.plotdialog import PlotDialog
 from ranalysis.log.loghandler import logger
-from ranalysis.plot.graph import graph_from_plot_ids, graph_clear, graph_add_title, graph_compare_plot
+from ranalysis.plot.graph import graph_from_plot_ids, graph_clear, graph_add_title
 from ranalysis.plot.plotcreator import PlotCreator
 
 
@@ -278,6 +278,7 @@ class PlotFrame(tkinter.Frame):
 
     def on_list_select(self, evt):
         """ Display plots when plots are selected in the list (triggered by event on the list) """
+        graph_clear(self.__graph)
         plot_ids = []
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))

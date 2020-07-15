@@ -44,7 +44,7 @@ class InputDialog:
         }
 
     def submit(self):
-        """ submit_button action to submit entry options and destroy the frame """
+        """ Submit entry options and destroy the frame """
         if self.__entry_box.get():
             self.__input_options['delimiter'] = self.__entry_box.get()
         self.__input_options['unit'] = self.__checkbox_var.get()

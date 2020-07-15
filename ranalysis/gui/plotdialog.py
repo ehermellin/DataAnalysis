@@ -5,13 +5,14 @@
 
 import logging
 import tkinter
+from tkinter.ttk import Checkbutton, Button
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 from matplotlib.figure import Figure
 
 from ranalysis.log.loghandler import logger
-from ranalysis.plot.graph import graph_compare_plot
+from ranalysis.plot.graph import graph_compare_plot, graph_clear, graph_compare_plot_diff, graph_compare_plot_values
 
 
 class PlotDialog:
@@ -25,20 +26,63 @@ class PlotDialog:
 
     def __init__(self, parent, plot1, plot2):
         """ PlotDialog constructor """
+        self.__plots = [plot1, plot2]
+
         top = self.top = tkinter.Toplevel(parent)
         logger.log(logging.DEBUG, "[PlotDialog] Comparing two plots " + plot1.get_name() + " " + plot2.get_name())
+
+        top_frame = tkinter.Frame(top, borderwidth=2, relief=tkinter.GROOVE)
+        top_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10, pady=10)
+
+        self.__chkbx_g = tkinter.IntVar()
+        self.__chkbx_g.set(1)
+        self.__check_graph = Checkbutton(top_frame, text="Display graphs to compare", variable=self.__chkbx_g)
+        self.__check_graph.grid(row=1, column=1, rowspan=1, padx=5, pady=5)
+        self.__chkbx_d = tkinter.IntVar()
+        self.__check_graph_diff = Checkbutton(top_frame, text="Display diff as graph", variable=self.__chkbx_d)
+        self.__check_graph_diff.grid(row=1, column=2, rowspan=1, padx=5, pady=5)
+        self.__chkbx_v = tkinter.IntVar()
+        self.__check_graph_values = Checkbutton(top_frame, text="Display diff as values?", variable=self.__chkbx_v)
+        self.__check_graph_values.grid(row=1, column=3, rowspan=1, padx=5, pady=5)
+
+        display_button = Button(top_frame, text="Display", command=self.display, width=15)
+        display_button.grid(row=1, column=4, rowspan=1, padx=5, pady=5)
+
+        clear_button = Button(top_frame, text="Clear", command=self.clear, width=15)
+        clear_button.grid(row=1, column=5, rowspan=1, padx=5, pady=5)
+
         graph_frame = tkinter.Frame(top, borderwidth=2, relief=tkinter.GROOVE)
-        graph_frame.pack(side=tkinter.TOP, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
+        graph_frame.pack(side=tkinter.BOTTOM, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
         figure = Figure(figsize=(8, 4))
-        graph = figure.add_subplot(111)
+        self.__graph = figure.add_subplot(111)
 
-        canvas = FigureCanvasTkAgg(figure, master=graph_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        self.__canvas = FigureCanvasTkAgg(figure, master=graph_frame)
+        self.__canvas.draw()
+        self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        toolbar = NavigationToolbar2Tk(canvas, graph_frame)
+        toolbar = NavigationToolbar2Tk(self.__canvas, graph_frame)
         toolbar.update()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+        self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        graph_compare_plot(graph, plot1, plot2)
-        canvas.draw()
+        graph_compare_plot(self.__graph, plot1, plot2)
+        self.__canvas.draw()
+
+    def display(self):
+        """ Display in the graph frame """
+        graph_clear(self.__graph)
+
+        if self.__chkbx_g.get():
+            graph_compare_plot(self.__graph, self.__plots[0], self.__plots[1])
+
+        if self.__chkbx_d.get():
+            graph_compare_plot_diff(self.__graph, self.__plots[0], self.__plots[1])
+
+        if self.__chkbx_v.get():
+            graph_compare_plot_values(self.__graph, self.__plots[0], self.__plots[1])
+
+        self.__canvas.draw()
+
+    def clear(self):
+        """ Clear the graph frame """
+        graph_clear(self.__graph)
+        self.__canvas.draw()

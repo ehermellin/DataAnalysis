@@ -11,7 +11,7 @@ from matplotlib import style
 
 from ranalysis.data.datamanager import DataManager
 from ranalysis.log.loghandler import logger, QueueHandler
-from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames, graph_from_function
+from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames, graph_from_function, graph_clear
 
 
 class CliHandler:
@@ -98,6 +98,7 @@ class CliHandler:
         """
         logger.log(logging.DEBUG, "[CliHandler] Plot function " + function)
         fig, ax = plt.subplots()
+        graph_clear(ax)
         graph_from_function(ax, function, xmin, xmax, discr, xlabel, ylabel)
         plt.show()
 
@@ -114,6 +115,7 @@ class CliHandler:
         if self.__data_manager is not None:
             logger.log(logging.DEBUG, "[CliHandler] Show from field name " + x_fieldname + " " + y_fieldname)
             fig, ax = plt.subplots()
+            graph_clear(ax)
             graph_from_fieldname(ax, self.__data_manager, x_fieldname, y_fieldname)
             plt.show()
         else:
@@ -132,6 +134,7 @@ class CliHandler:
         if self.__data_manager is not None:
             logger.log(logging.DEBUG, "[CliHandler] Show from field names " + x_fieldname + " " + str(y_fieldnames))
             fig, ax = plt.subplots()
+            graph_clear(ax)
             graph_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
             plt.show()
         else:

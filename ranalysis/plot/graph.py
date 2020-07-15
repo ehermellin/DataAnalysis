@@ -191,6 +191,7 @@ def graph_add_title(ax, title):
     title : str
         the title of the graph
     """
+    logger.log(logging.DEBUG, "[Graph] Clear")
     ax.set_title(title)
 
 
@@ -206,12 +207,9 @@ def graph_compare_plot(ax, plot1, plot2):
     plot2 : Plot
         the second plot to compare
     """
-    ax.clear()
-
+    logger.log(logging.DEBUG, "[Graph] Compare two plots")
     plot(ax, [plot1, plot2])
-
     ax.fill_between(plot1.get_x(), plot1.get_y(), plot2.get_y(), color='grey', alpha='0.3')
-
     ax.legend(loc='upper center', bbox_to_anchor=(1.05, 0.75), ncol=1, fancybox=True)
 
 
@@ -227,6 +225,7 @@ def graph_compare_plot_diff(ax, plot1, plot2):
     plot2 : Plot
         the second plot to compare
     """
+    logger.log(logging.DEBUG, "[Graph] Display compare graph")
     diff = []
     compar_dif = []
     for ii in range(len(plot1.get_x())):
@@ -253,6 +252,7 @@ def graph_compare_plot_values(ax, plot1, plot2):
     plot2 : Plot
         the second plot to compare
     """
+    logger.log(logging.DEBUG, "[Graph] Display compare values")
     ymin = min(plot1.get_y())
     for ii in range(len(plot1.get_x())):
         value = abs(plot1.get_y()[ii] - plot2.get_y()[ii])

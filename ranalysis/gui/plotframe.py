@@ -266,8 +266,12 @@ class PlotFrame(tkinter.Frame):
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))
 
-        PlotDialog(self, PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0]),
-                   PlotCreator.get_instance().get_plot_from_stringify(plot_ids[1]))
+        plot1 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0])
+        plot2 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[1])
+        if len(plot1.get_x()) == len(plot2.get_x()):
+            PlotDialog(self, plot1, plot2)
+        else:
+            logger.log(logging.ERROR, "[PlotFrame] Plots do not have the same x interval")
 
     def clear_plot(self):
         """ Clear/reset the plot frame """

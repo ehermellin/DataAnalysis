@@ -32,10 +32,12 @@ class Plot:
     -------
     get_plot_id()
         return the plot id (int)
-    get_name()
-        return name of the plot (str)
-    set_name(name)
-        set the name of the plot
+    get_function()
+        return function of the plot (str)
+    set_function(function)
+        set function of the plot
+    use_function()
+        return a boolean of the use of a function
     get_x()
         return x data (list)
     set_x(x_data)
@@ -75,7 +77,7 @@ class Plot:
             the unit of the x-axis ("")
         """
         self.__plot_id = plot_id
-        self.__name = ""
+        self.__function = ""
         self.__x = x
         self.__y = y
         self.__x_axis = x_axis
@@ -91,17 +93,7 @@ class Plot:
         str
             a stringify version of the plot
         """
-        return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "] " + self.__name
-
-    def get_name(self):
-        """ Get plot name
-
-        Returns
-        ------
-        str
-            the name of the plot
-        """
-        return self.__name
+        return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "] "
 
     def get_plot_id(self):
         """ Get plot id
@@ -113,15 +105,38 @@ class Plot:
         """
         return self.__plot_id
 
-    def set_name(self, name):
-        """ Set name
+    def get_function(self):
+        """ Get function
+
+        Returns
+        ------
+        str
+            the function of the plot
+        """
+        return self.__name
+
+    def set_function(self, function):
+        """ Set function
 
         Parameters
         ------
-        name
-            the name
+        function
+            the function
         """
-        self.__name = name
+        self.__function = function
+
+    def use_function(self):
+        """ Set function
+
+        Returns
+        ------
+        boolean
+            return the status of the use of a function
+        """
+        if self.__function == "":
+            return False
+        else:
+            return True
 
     def get_x(self):
         """ Get x data

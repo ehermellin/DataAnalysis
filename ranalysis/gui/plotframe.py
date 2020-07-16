@@ -76,9 +76,14 @@ class PlotFrame(tkinter.Frame):
         self.__canvas = None
         self.__graph = None
         self.__graph_frame = None
-        self.compare_button = None
-        self.csv_frame = None
+        self.__modify_button = None
+        self.__compare_button = None
+        self.__csv_frame = None
         self.initialize()
+
+    def get_marker(self):
+        """ Return the selected marker """
+        return self.__marker_combo.get()
 
     def initialize(self):
         """ Initialize all the tkinter objects """
@@ -119,8 +124,10 @@ class PlotFrame(tkinter.Frame):
         clear_button.grid(row=2, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
 
         remove_button = Button(list_frame, text="Remove plot", command=self.remove_plot, width=20)
-        self.compare_button = Button(list_frame, state=tkinter.DISABLED, text="Compare two plots",
-                                     command=self.compare_plots, width=20)
+        self.__modify_button = Button(list_frame, state=tkinter.DISABLED, text="Modify plot",
+                                      command=self.modify_plot, width=20)
+        self.__compare_button = Button(list_frame, state=tkinter.DISABLED, text="Compare two plots",
+                                       command=self.compare_plots, width=20)
 
         # label
         label_x = Label(action_frame, text="Choose x axis: ")
@@ -165,7 +172,8 @@ class PlotFrame(tkinter.Frame):
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
         remove_button.pack(padx=10, pady=5)
-        self.compare_button.pack(padx=10, pady=5)
+        self.__modify_button.pack(padx=10, pady=5)
+        self.__compare_button.pack(padx=10, pady=5)
 
         # plot
         self.create_plot()
@@ -230,13 +238,13 @@ class PlotFrame(tkinter.Frame):
             self.__data_manager.refresh_data()
             PlotCreator.get_instance().refresh_plots(self.__data_manager)
             self.on_list_select(None)
-            if self.csv_frame is not None:
-                self.csv_frame.fill_data()
+            if self.__csv_frame is not None:
+                self.__csv_frame.fill_data()
 
     def display_data(self):
         """ Display csv data in a CsvFrame """
         if self.__data_manager.manager_have_data():
-            self.csv_frame = CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
+            self.__csv_frame = CsvFrame(self, self.__data_manager, self.__canvas, self.__graph)
 
     def add_plot(self):
         """ Add_button action to add created plot in the list """
@@ -276,6 +284,17 @@ class PlotFrame(tkinter.Frame):
         if self.__plot_list.size() == 0:
             self.__variable1_combo["state"] = 'readonly'
 
+    def modify_plot(self):
+        """ Modify plot """
+        plot_ids = []
+        for idx in self.__plot_list.curselection():
+            plot_ids.append(self.__plot_list.get(idx))
+        if len(plot_ids) == 1:
+            plot1 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0])
+            if plot1.use_function():
+                pass
+        pass
+
     def compare_plots(self):
         """ Compare two plots in a graph """
         plot_ids = []
@@ -305,10 +324,15 @@ class PlotFrame(tkinter.Frame):
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))
 
-        if len(self.__plot_list.curselection()) == 2:
-            self.compare_button['state'] = 'normal'
+        if len(self.__plot_list.curselection()) == 1:
+            self.__modify_button['state'] = 'normal'
+            self.__compare_button['state'] = 'disabled'
+        elif len(self.__plot_list.curselection()) == 2:
+            self.__modify_button['state'] = 'disabled'
+            self.__compare_button['state'] = 'normal'
         else:
-            self.compare_button['state'] = 'disabled'
+            self.__modify_button['state'] = 'disabled'
+            self.__compare_button['state'] = 'disabled'
 
         if len(plot_ids) > 0:
             graph_from_plot_ids(self.__graph, plot_ids, self.__marker_combo.get())
@@ -325,7 +349,7 @@ class PlotFrame(tkinter.Frame):
 
     def reset_csvframe(self):
         """ Reset csv frame """
-        self.csv_frame = None
+        self.__csv_frame = None
 
     def __reset_plotframe(self):
         """ Reset plot frame attributes """

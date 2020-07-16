@@ -5,7 +5,7 @@
 
 import logging
 import tkinter
-from tkinter.ttk import Frame, Scrollbar, Treeview, Combobox, Label
+from tkinter.ttk import Frame, Scrollbar, Treeview, Combobox, Label, Button
 
 from ranalysis.log.loghandler import logger
 
@@ -53,19 +53,15 @@ class CsvFrame:
                                 postcommand=lambda: self.combo_y.configure(values=manager.get_field_names()))
         self.combo_y.grid(row=1, column=4, padx=5, pady=5)
 
-        label_marker = Label(action_frame, text="Choose marker: ")
-        label_marker.grid(row=1, column=5, padx=5, pady=5)
-        list_marker = ['.', 'x', 'd', '+']
-        marker_select_combo = tkinter.StringVar()
-        self.combo_marker = Combobox(action_frame, textvariable=marker_select_combo, values=list_marker, state='readonly')
-        self.combo_marker.grid(row=1, column=6, padx=5, pady=5)
-
         label_color = Label(action_frame, text="Choose color: ")
-        label_color.grid(row=1, column=7, padx=5, pady=5)
+        label_color.grid(row=1, column=5, padx=5, pady=5)
         list_color = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'white']
         color_select_combo = tkinter.StringVar()
         self.combo_color = Combobox(action_frame, textvariable=color_select_combo, values=list_color, state='readonly')
-        self.combo_color.grid(row=1, column=8, padx=5, pady=5)
+        self.combo_color.grid(row=1, column=6, padx=5, pady=5)
+
+        transform_button = Button(action_frame, text="Transform", command=self.transform_data, width=20)
+        transform_button.grid(row=1, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
 
         table_frame = Frame(top)
         table_frame.pack(side=tkinter.BOTTOM, expand=True, fill=tkinter.BOTH)
@@ -103,6 +99,10 @@ class CsvFrame:
         for entry in self.__manager.get_data_tuple():
             self.tree.insert("", 'end', values=entry)
 
+    def transform_data(self):
+        """ Transform data and add in Treeview """
+        pass
+
     def on_tree_select(self, event):
         """ Event when selecting data in Treeview """
         list_values = self.tree.item(self.tree.selection())['values']
@@ -118,9 +118,9 @@ class CsvFrame:
                 if not isinstance(value_y, int):
                     value_y = value_y.replace(',', '.')
 
-                marker = self.combo_marker.get()
-                if marker == "":
-                    marker = '+'
+                marker = self.__parent.get_marker()
+                if marker == "" or marker == "None" or marker is None:
+                    marker = '.'
 
                 color = self.combo_color.get()
                 if color == "":

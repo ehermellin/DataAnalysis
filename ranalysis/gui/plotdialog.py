@@ -5,7 +5,7 @@
 
 import logging
 import tkinter
-from tkinter.ttk import Checkbutton, Button
+from tkinter.ttk import Checkbutton, Button, Entry, Label
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -24,9 +24,10 @@ class PlotDialog:
         the parent frame of the PlotDialog
     """
 
-    def __init__(self, parent, plot1, plot2):
+    def __init__(self, parent, plot1, plot2, marker="."):
         """ PlotDialog constructor """
         self.__plots = [plot1, plot2]
+        self.__marker = marker
 
         top = self.top = tkinter.Toplevel(parent)
         logger.log(logging.DEBUG, "[PlotDialog] Comparing two plots " + plot1.get_name() + " " + plot2.get_name())
@@ -42,14 +43,26 @@ class PlotDialog:
         self.__check_graph_diff = Checkbutton(top_frame, text="Display diff as graph", variable=self.__chkbx_d)
         self.__check_graph_diff.grid(row=1, column=2, rowspan=1, padx=5, pady=5)
         self.__chkbx_v = tkinter.IntVar()
-        self.__check_graph_values = Checkbutton(top_frame, text="Display diff as values?", variable=self.__chkbx_v)
-        self.__check_graph_values.grid(row=1, column=3, rowspan=1, padx=5, pady=5)
+        self.__check_graph_values = Checkbutton(top_frame, text="Display diff as values", variable=self.__chkbx_v)
+        self.__check_graph_values.grid(row=2, column=2, rowspan=1, padx=5, pady=5)
+
+        label_threshold = Label(top_frame, text="Diff threshold:", anchor="w")
+        label_threshold.grid(row=1, column=3, padx=5, pady=5)
+        self.__entry_threshold = Entry(top_frame, width=15)
+        self.__entry_threshold.insert(tkinter.END, '0.1')
+        self.__entry_threshold.grid(row=1, column=4, columnspan=1, rowspan=1, padx=5, pady=5)
+
+        label_round = Label(top_frame, text="Diff round:", anchor="w")
+        label_round.grid(row=2, column=3, padx=5, pady=5)
+        self.__entry_round = Entry(top_frame, width=15)
+        self.__entry_round.insert(tkinter.END, '2')
+        self.__entry_round.grid(row=2, column=4, columnspan=1, rowspan=1, padx=5, pady=5)
 
         display_button = Button(top_frame, text="Display", command=self.display, width=15)
-        display_button.grid(row=1, column=4, rowspan=1, padx=5, pady=5)
+        display_button.grid(row=1, column=5, rowspan=1, padx=5, pady=5)
 
         clear_button = Button(top_frame, text="Clear", command=self.clear, width=15)
-        clear_button.grid(row=1, column=5, rowspan=1, padx=5, pady=5)
+        clear_button.grid(row=2, column=5, rowspan=1, padx=5, pady=5)
 
         graph_frame = tkinter.Frame(top, borderwidth=2, relief=tkinter.GROOVE)
         graph_frame.pack(side=tkinter.BOTTOM, padx=10, pady=10, fill=tkinter.BOTH, expand=True)
@@ -64,7 +77,7 @@ class PlotDialog:
         toolbar.update()
         self.__canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
-        graph_compare_plot(self.__graph, plot1, plot2)
+        graph_compare_plot(self.__graph, plot1, plot2, self.__marker)
         self.__canvas.draw()
 
     def display(self):
@@ -72,14 +85,15 @@ class PlotDialog:
         graph_clear(self.__graph)
 
         if self.__chkbx_g.get():
-            graph_compare_plot(self.__graph, self.__plots[0], self.__plots[1])
+            graph_compare_plot(self.__graph, self.__plots[0], self.__plots[1], self.__marker)
 
         if self.__chkbx_d.get():
-            graph_compare_plot_diff(self.__graph, self.__plots[0], self.__plots[1])
+            graph_compare_plot_diff(self.__graph, self.__plots[0], self.__plots[1], self.__marker)
 
         if self.__chkbx_v.get():
-            graph_compare_plot_values(self.__graph, self.__plots[0], self.__plots[1])
-
+            graph_compare_plot_values(self.__graph, self.__plots[0], self.__plots[1],
+                                      float(self.__entry_threshold.get()), bool(self.__chkbx_d.get()),
+                                      int(self.__entry_round.get()))
         self.__canvas.draw()
 
     def clear(self):

@@ -9,7 +9,6 @@ from tkinter import simpledialog
 from tkinter.filedialog import askopenfilename
 from tkinter.ttk import Combobox, Button, Label
 
-import matplotlib.pyplot as plt
 from matplotlib import style
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -46,8 +45,10 @@ class PlotFrame(tkinter.Frame):
         display csv data in a CsvFrame
     add_plot()
         add_button action to add created plot in the list
-    customize_plot()
+    style_plot()
         customize_button action to change the matplotlib plot style
+    use_marker()
+        use the selected marker style for graph
     remove_plot()
         remove_button action to remove selected plot from the list
     compare_plot()
@@ -69,6 +70,7 @@ class PlotFrame(tkinter.Frame):
         self.__variable1_combo = None
         self.__variable2_combo = None
         self.__style_combo = None
+        self.__marker_combo = None
         self.__plot_list = None
         self.__data_manager = DataManager()
         self.__canvas = None
@@ -106,8 +108,10 @@ class PlotFrame(tkinter.Frame):
         title_button = Button(action_frame, text="Add title", command=self.add_title, width=15)
         title_button.grid(row=2, column=5, rowspan=1, padx=5, pady=5)
 
-        customize_button = Button(customize_frame, text="Customize plot", command=self.customize_plot, width=35)
-        customize_button.grid(row=2, column=1, columnspan=2, rowspan=1, padx=5, pady=5)
+        style_button = Button(customize_frame, text="Use style", command=self.style_plot, width=15)
+        style_button.grid(row=1, column=3, columnspan=1, rowspan=1, padx=5, pady=5)
+        marker_button = Button(customize_frame, text="Use marker", command=self.use_marker, width=15)
+        marker_button.grid(row=2, column=3, columnspan=1, rowspan=1, padx=5, pady=5)
 
         function_button = Button(action_frame, text="Plot math function", command=self.add_plot_function, width=35)
         function_button.grid(row=1, column=7, columnspan=2, rowspan=1, padx=5, pady=5)
@@ -125,6 +129,8 @@ class PlotFrame(tkinter.Frame):
         label_y.grid(row=2, column=3, padx=5, pady=5)
         label_style = Label(customize_frame, text="Choose style: ")
         label_style.grid(row=1, column=1, rowspan=1, padx=5, pady=5)
+        label_style = Label(customize_frame, text="Choose marker: ")
+        label_style.grid(row=2, column=1, rowspan=1, padx=5, pady=5)
 
         # list
         self.__plot_list = tkinter.Listbox(list_frame, selectmode=tkinter.MULTIPLE, exportselection=False)
@@ -149,6 +155,12 @@ class PlotFrame(tkinter.Frame):
         self.__style_combo = Combobox(customize_frame, textvariable=style_select_combo3, values=style.available,
                                       state='readonly')
         self.__style_combo.grid(row=1, column=2, rowspan=1, padx=5, pady=5)
+        marker_select_combo4 = tkinter.StringVar()
+        markers = [".", ",", "o", "v", "^", "<", ">", "1", "2", "3", "4", "8", "s", "p", "P", "*", "h", "H", "+", "x",
+                   "X", "D", "d", "|", "_", "None"]
+        self.__marker_combo = Combobox(customize_frame, textvariable=marker_select_combo4, values=markers,
+                                       state='readonly')
+        self.__marker_combo.grid(row=2, column=2, rowspan=1, padx=5, pady=5)
 
         # pack
         self.__plot_list.pack(padx=10, pady=10, fill=tkinter.Y, expand=1)
@@ -241,11 +253,15 @@ class PlotFrame(tkinter.Frame):
         else:
             logger.log(logging.ERROR, "[PlotFrame] No variables selected")
 
-    def customize_plot(self):
+    def style_plot(self):
         """ Change the matplotlib plot style """
         if self.__style_combo.get() != "":
             logger.log(logging.DEBUG, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
+
+    def use_marker(self):
+        """ Change the marker used to plot graph """
+        self.on_list_select(None)
 
     def remove_plot(self):
         """ Remove selected plot from the list """
@@ -265,13 +281,15 @@ class PlotFrame(tkinter.Frame):
         plot_ids = []
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))
-
-        plot1 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0])
-        plot2 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[1])
-        if len(plot1.get_x()) == len(plot2.get_x()):
-            PlotDialog(self, plot1, plot2)
+        if len(plot_ids) == 2:
+            plot1 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0])
+            plot2 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[1])
+            if len(plot1.get_x()) == len(plot2.get_x()):
+                PlotDialog(self, plot1, plot2, self.__marker_combo.get())
+            else:
+                logger.log(logging.ERROR, "[PlotFrame] Plots do not have the same x interval")
         else:
-            logger.log(logging.ERROR, "[PlotFrame] Plots do not have the same x interval")
+            logger.log(logging.ERROR, "[PlotFrame] You can compare only two plots")
 
     def clear_plot(self):
         """ Clear/reset the plot frame """
@@ -293,7 +311,7 @@ class PlotFrame(tkinter.Frame):
             self.compare_button['state'] = 'disabled'
 
         if len(plot_ids) > 0:
-            graph_from_plot_ids(self.__graph, plot_ids)
+            graph_from_plot_ids(self.__graph, plot_ids, self.__marker_combo.get())
             self.__canvas.draw()
         else:
             self.clear_plot()

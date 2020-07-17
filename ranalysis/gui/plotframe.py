@@ -38,23 +38,25 @@ class PlotFrame(tkinter.Frame):
     create_plot(name_style='ggplot')
         create a matplotlib plot in a tkinter environment
     load_data()
-        load_button action to load data from a csv file
+        load data from a csv file
     refresh_data()
         refresh data from the same csv file
     display_data()
         display csv data in a CsvFrame
     add_plot()
-        add_button action to add created plot in the list
+        add created plot in the list
     style_plot()
-        customize_button action to change the matplotlib plot style
+        change the matplotlib plot style
     use_marker()
         use the selected marker style for graph
     remove_plot()
-        remove_button action to remove selected plot from the list
+        remove selected plot from the list
+    modify_plot()
+        modify the selected plot created by a math function
     compare_plot()
         compare two plots in a graph
     clear_plot()
-        clear_button action to clear/reset the plot frame
+        clear/reset the plot frame
     on_list_select(evt)
         display plots when plots are selected in the list (triggered by event on the list)
     add_title()
@@ -285,15 +287,32 @@ class PlotFrame(tkinter.Frame):
             self.__variable1_combo["state"] = 'readonly'
 
     def modify_plot(self):
-        """ Modify plot """
+        """ Modify plot created by a math function """
         plot_ids = []
         for idx in self.__plot_list.curselection():
             plot_ids.append(self.__plot_list.get(idx))
         if len(plot_ids) == 1:
+            idxs = self.__plot_list.curselection()
             plot1 = PlotCreator.get_instance().get_plot_from_stringify(plot_ids[0])
             if plot1.use_function():
-                pass
-        pass
+                function = plot1.get_function()
+                xmin = plot1.get_x()[0]
+                discr = len(plot1.get_x())
+                xmax = plot1.get_x()[discr-1]
+                xlabel = plot1.get_x_axis()
+                ylabel = plot1.get_y_axis()
+                compare_dialog = FunctionDialog(self, function, xmin, xmax, discr, xlabel, ylabel)
+                self.wait_window(compare_dialog.top)
+                if compare_dialog.get_plot() is not None:
+                    plot1.update(compare_dialog.get_plot())
+                    self.__plot_list.delete(idxs)
+                    self.__plot_list.insert(idxs, plot1)
+                    self.__plot_list.selection_set(idxs)
+                    self.on_list_select(None)
+            else:
+                logger.log(logging.ERROR, "[PlotFrame] Plot cannot be modify because its not a plot from math function")
+        else:
+            logger.log(logging.ERROR, "[PlotFrame] More than one plot selected")
 
     def compare_plots(self):
         """ Compare two plots in a graph """

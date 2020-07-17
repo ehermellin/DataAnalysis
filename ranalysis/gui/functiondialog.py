@@ -29,7 +29,7 @@ class FunctionDialog:
         exit tht dialog
     """
 
-    def __init__(self, parent, function="x*x", xmin=1, xmax=10, discr=100, xlabel="x", ylabel="x*x"):
+    def __init__(self, parent, function="x*x", xmin=1.0, xmax=10.0, discr=100, xlabel="x", ylabel="x*x"):
         """ FunctionDialog constructor """
         top = self.top = tkinter.Toplevel(parent)
         self.__entry_function_label = Label(top, text='Enter the function:', width=25)

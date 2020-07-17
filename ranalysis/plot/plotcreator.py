@@ -191,8 +191,8 @@ class PlotCreator:
             the plot
         """
         func = self.string_to_function(str(function))
-        a = int(xmin)
-        b = int(xmax)
+        a = float(xmin)
+        b = float(xmax)
         x_interval = np.linspace(a, b, int(discr)).tolist()
         fx = []
         for x in x_interval:

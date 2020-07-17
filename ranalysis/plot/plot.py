@@ -93,7 +93,7 @@ class Plot:
         str
             a stringify version of the plot
         """
-        return "id=" + str(self.__plot_id) + " [" + self.__x_axis + " | " + self.__y_axis + "] "
+        return "id=" + str(self.__plot_id) + " | f(" + self.__x_axis + ") = " + self.__y_axis
 
     def get_plot_id(self):
         """ Get plot id
@@ -113,7 +113,7 @@ class Plot:
         str
             the function of the plot
         """
-        return self.__name
+        return self.__function
 
     def set_function(self, function):
         """ Set function
@@ -217,3 +217,19 @@ class Plot:
             the y unit label
         """
         return self.__y_unit
+
+    def update(self, plot):
+        """ Update the actual plot from a plot
+
+        Parameters
+        ------
+        plot
+            the plot with data to use
+        """
+        self.__function = plot.get_function()
+        self.__x = plot.get_x()
+        self.__y = plot.get_y()
+        self.__x_axis = plot.get_x_axis()
+        self.__y_axis = plot.get_y_axis()
+        self.__x_unit = plot.get_x_unit()
+        self.__y_unit = plot.get_y_unit()

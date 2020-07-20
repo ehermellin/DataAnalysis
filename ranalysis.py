@@ -11,7 +11,7 @@ from ranalysis.gui.ranalysisframe import RAnalysisFrame
 from ranalysis.log.loghandler import logger
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument('-gui', action='store_true',
                         help='run ranalysis with gui')

@@ -20,6 +20,8 @@ class DataManager:
             the reding options of the csv file
         __fieldnames : list(str)
             list of fieldnames (name of the data variables)
+        __data_unit : list(str)
+            list of data unit
         __data : dict
             the read csv data
 
@@ -53,6 +55,7 @@ class DataManager:
         self.__reading_options = {}
 
         self.__fieldnames = []
+        self.__data_unit = []
         self.__data = {}
         self.__data_values_as_list_tuple = []
 
@@ -78,25 +81,50 @@ class DataManager:
         """
         self.__filename = filename
         self.__reading_options = options
-        self.clear_data()
         logger.log(logging.DEBUG, "[DataManager] " + self.__filename + " " + str(self.__reading_options))
+
+        if self.__reading_options['clear']:
+            self.clear_data()
+
+        counter = 0
         with open(self.__filename, 'rU') as infile:
             # read the file as a dictionary for each row ({header : value})
             reader = csv.DictReader(infile, delimiter=self.__reading_options['delimiter'])
             for row in reader:
                 for header, value in row.items():
-                    try:
-                        self.__data[header].append(value)
-                        if header not in self.__fieldnames:
-                            self.__fieldnames.append(header)
-                    except KeyError:
-                        logger.log(logging.DEBUG, "[DataManager] Key error:" + header + " " + value)
-                        self.__data[header] = [value]
+                    if header not in self.__fieldnames:
+                        self.__fieldnames.append(header)
+
+                    if self.__reading_options['unit'] == 1 and counter == 0:
+                        self.__data_unit.insert(self.__fieldnames.index(header), value)
+
+                    else:
+                        try:
+                            value_temp = float(value.replace(',', '.'))
+                            try:
+                                self.__data[header].append(value_temp)
+                            except KeyError:
+                                logger.log(logging.DEBUG, "[DataManager] Key error:" + header + " " + value)
+                                self.__data[header] = [value]
+                        except ValueError:
+                            print("test")
+
+                counter += 1
+
         self.dict_to_list_tuple()
+
+    def add_data(self):
+        # TODO faire l'ajout de données dans la structure du DataManager !!
+        pass
 
     def dict_to_list_tuple(self):
         """ Convert dictionary values into list of tuple """
+
+        # TODO Peut être reset cette variable avant !!!!!!
+        self.__data_values_as_list_tuple = []
         dict_values_to_list = list(self.__data.values())
+
+        print(dict_values_to_list)
 
         # Test len of each list (must be equal)
         it = iter(dict_values_to_list)
@@ -145,13 +173,13 @@ class DataManager:
         str
             the unit of data field name
         """
-        if field_name in self.__data:
+        if field_name in self.__fieldnames:
             if self.__reading_options['unit'] == 1:
-                return self.__data[field_name][0]
+                return self.__data_unit[self.__fieldnames.index(field_name)]
             else:
                 return ""
         else:
-            logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
+            logger.log(logging.ERROR, "[DataManager] Error field name does not exist (get unit)")
             return ""
 
     def get_data_from_field_name(self, field_name):
@@ -168,9 +196,9 @@ class DataManager:
             the data of data field name
         """
         if field_name in self.__data:
-            return self.__copy_and_adapt_data(self.__data[field_name])
+            return copy_and_adapt_data(self.__data[field_name])
         else:
-            logger.log(logging.ERROR, "[DataManager] Error field name does not exist")
+            logger.log(logging.ERROR, "[DataManager] Error field name does not exist (get data)")
             return list()
 
     def clear_data(self):
@@ -198,26 +226,24 @@ class DataManager:
         self.__data = {}
         self.__data_values_as_list_tuple = []
 
-    def __copy_and_adapt_data(self, data):
-        """ Correct and return a list of data
 
-        Parameters
-        ----------
-        data : list(float, int, ...)
-            the list of data
+def copy_and_adapt_data(data):
+    """ Correct and return a list of data
 
-        Returns
-        ------
-        list(float, int, ...)
-            the copied and corrected data
-        """
-        data_temp = data.copy()
-        if self.__reading_options['unit'] == 1:
-            data_temp.remove(data_temp[0])
-        data_temp = [sub.replace(',', '.') for sub in data_temp]
-        try:
-            data_temp = list(map(float, data_temp))
-            return data_temp
-        except ValueError:
-            logger.log(logging.ERROR, "[DataManager] Error when converting data (string to number)")
-            return list()
+    Parameters
+    ----------
+    data : list(float, int, ...)
+        the list of data
+
+    Returns
+    ------
+    list(float, int, ...)
+        the copied and corrected data
+    """
+    data_temp = data.copy()
+    try:
+        data_temp = list(map(float, data_temp))
+        return data_temp
+    except ValueError:
+        logger.log(logging.ERROR, "[DataManager] Error when converting data (string to number)")
+        return list()

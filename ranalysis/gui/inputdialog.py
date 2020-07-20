@@ -29,25 +29,32 @@ class InputDialog:
     def __init__(self, parent):
         """ InputDialog constructor """
         top = self.top = tkinter.Toplevel(parent)
-        self.__entry_label = Label(top, text='Enter the delimiter of the csv file:')
-        self.__entry_label.pack()
+        self.__entry_label = Label(top, text='Delimiter of the csv file:')
+        self.__entry_label.grid(row=1, column=1, rowspan=1, padx=5, pady=5)
         self.__entry_box = Entry(top)
-        self.__entry_box.pack()
-        self.__checkbox_var = tkinter.IntVar()
-        self.__check_button = Checkbutton(top, text="Unit in the csv file?", variable=self.__checkbox_var)
-        self.__check_button.pack()
-        self.__submit_button = Button(top, text='Submit', command=self.submit)
-        self.__submit_button.pack()
+        self.__entry_box.grid(row=1, column=2, rowspan=1, padx=5, pady=5)
+        self.__checkbox_var_unit = tkinter.IntVar()
+        self.__checkbox_var_unit.set(1)
+        self.__check_button_unit = Checkbutton(top, text="Unit in the csv file?", variable=self.__checkbox_var_unit)
+        self.__check_button_unit.grid(row=2, column=1, rowspan=1, padx=5, pady=5)
+        self.__checkbox_var_clear = tkinter.IntVar()
+        self.__checkbox_var_clear.set(1)
+        self.__check_button_clear = Checkbutton(top, text="Clear the data?", variable=self.__checkbox_var_clear)
+        self.__check_button_clear.grid(row=2, column=2, rowspan=1, padx=5, pady=5)
+        self.__submit_button = Button(top, text='Submit', command=self.submit, width=35)
+        self.__submit_button.grid(row=3, column=1, columnspan=2, padx=5, pady=5)
         self.__input_options = {
             'delimiter': ';',
-            'unit': 1
+            'unit': 1,
+            'clear': 1
         }
 
     def submit(self):
         """ Submit entry options and destroy the frame """
         if self.__entry_box.get():
             self.__input_options['delimiter'] = self.__entry_box.get()
-        self.__input_options['unit'] = self.__checkbox_var.get()
+        self.__input_options['unit'] = self.__checkbox_var_unit.get()
+        self.__input_options['clear'] = self.__checkbox_var_clear.get()
         self.top.destroy()
         logger.log(logging.DEBUG, "[InputDialog] " + str(self.__input_options))
 

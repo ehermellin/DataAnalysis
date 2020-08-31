@@ -80,16 +80,16 @@ class RAnalysisFrame(tkinter.Tk):
         if title is None or title == "":
             title = "Plot frame " + str(self.__counter)
         self.__notebook.add(tab, text=title)
-        logger.log(logging.DEBUG, "[MainFrame] Add tab: " + str(self.__counter))
+        logger.log(logging.INFO, "[MainFrame] Add tab: " + str(self.__counter))
 
     def remove_tab_command(self):
         """ Removing selected notebook tab """
         self.__notebook.forget(self.__notebook.select())
-        logger.log(logging.DEBUG, "[MainFrame] Remove tab")
+        logger.log(logging.INFO, "[MainFrame] Remove tab")
 
     def logger(self):
         """ Display or hide the LoggerFrame """
-        logger.log(logging.DEBUG, "[MainFrame] Open Logger frame")
+        logger.log(logging.INFO, "[MainFrame] Open Logger frame")
         if self.__logger_frame is not None:
             self.__logger_frame.quit()
         self.__logger_frame = None

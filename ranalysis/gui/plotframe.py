@@ -225,13 +225,12 @@ class PlotFrame(tkinter.Frame):
 
             input_dialog = InputDialog(self)
             self.wait_window(input_dialog.top)
-            logger.log(logging.DEBUG, "[PlotFrame] Open file:" + str(filename))
+            logger.log(logging.INFO, "[PlotFrame] Open file:" + str(filename))
 
             if self.__data_manager is not None:
                 if input_dialog.get_input_options()['clear']:
                     self.__reset_plotframe()
                     self.clear_data()
-                    self.__data_manager.reset_manager()
             else:
                 self.__data_manager = DataManager()
 
@@ -269,7 +268,7 @@ class PlotFrame(tkinter.Frame):
                 plot_f = PlotCreator.get_instance()
                 plot = plot_f.plot_from_fieldnames(self.__data_manager, self.__variable1_combo.get(),
                                                    [self.__variable2_combo.get()])
-                logger.log(logging.DEBUG, "[PlotFrame] Add plot: " + str(plot[0]))
+                logger.log(logging.INFO, "[PlotFrame] Add plot: " + str(plot[0]))
                 self.__plot_list.insert(tkinter.END, plot[0])
                 self.__variable1_combo["state"] = 'disabled'
             else:
@@ -280,7 +279,7 @@ class PlotFrame(tkinter.Frame):
     def style_plot(self):
         """ Change the matplotlib plot style """
         if self.__style_combo.get() != "":
-            logger.log(logging.DEBUG, "[PlotFrame] Style: " + self.__style_combo.get())
+            logger.log(logging.INFO, "[PlotFrame] Style: " + self.__style_combo.get())
             self.create_plot(self.__style_combo.get())
 
     def use_marker(self):
@@ -290,7 +289,7 @@ class PlotFrame(tkinter.Frame):
     def remove_plot(self):
         """ Remove selected plot from the list """
         if self.__plot_list.size() > 0:
-            logger.log(logging.DEBUG, "[PlotFrame] Remove plot")
+            logger.log(logging.INFO, "[PlotFrame] Remove plot")
             idxs = self.__plot_list.curselection()
             for idx in idxs:
                 self.__plot_list.delete(idx)
@@ -345,7 +344,7 @@ class PlotFrame(tkinter.Frame):
 
     def clear_plot(self):
         """ Clear/reset the plot frame """
-        logger.log(logging.DEBUG, "[PlotFrame] Clear all plots")
+        logger.log(logging.INFO, "[PlotFrame] Clear all plots")
         graph_clear(self.__graph)
         self.__plot_list.selection_clear(0, tkinter.END)
         self.__canvas.draw()

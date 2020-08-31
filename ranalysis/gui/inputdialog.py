@@ -56,7 +56,7 @@ class InputDialog:
         self.__input_options['unit'] = self.__checkbox_var_unit.get()
         self.__input_options['clear'] = self.__checkbox_var_clear.get()
         self.top.destroy()
-        logger.log(logging.DEBUG, "[InputDialog] " + str(self.__input_options))
+        logger.log(logging.INFO, "[InputDialog] " + str(self.__input_options))
 
     def get_input_options(self):
         """ Get entry options """

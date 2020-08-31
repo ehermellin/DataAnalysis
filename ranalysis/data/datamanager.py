@@ -81,7 +81,7 @@ class DataManager:
         """
         self.__filename = filename
         self.__reading_options = options
-        logger.log(logging.DEBUG, "[DataManager] " + self.__filename + " " + str(self.__reading_options))
+        logger.log(logging.INFO, "[DataManager] " + self.__filename + " " + str(self.__reading_options))
 
         if self.__reading_options['clear']:
             self.clear_data()
@@ -104,7 +104,7 @@ class DataManager:
                             try:
                                 self.__data[header].append(value_temp)
                             except KeyError:
-                                logger.log(logging.DEBUG, "[DataManager] Key error:" + header + " " + value)
+                                logger.log(logging.INFO, "[DataManager] Key error:" + header + " " + value)
                                 self.__data[header] = [value]
                         except ValueError:
                             print("test")
@@ -115,16 +115,14 @@ class DataManager:
 
     def add_data(self):
         # TODO faire l'ajout de données dans la structure du DataManager !!
+        # (fonctionnalité utilisable dans le data viewer csv frame)
+
         pass
 
     def dict_to_list_tuple(self):
         """ Convert dictionary values into list of tuple """
-
-        # TODO Peut être reset cette variable avant !!!!!!
         self.__data_values_as_list_tuple = []
         dict_values_to_list = list(self.__data.values())
-
-        print(dict_values_to_list)
 
         # Test len of each list (must be equal)
         it = iter(dict_values_to_list)
@@ -133,7 +131,7 @@ class DataManager:
             logger.log(logging.ERROR, "[DataManager] Not all lists have same length")
         else:
             # Convert to tuple
-            logger.log(logging.DEBUG, "[DataManager] Converting dict data to list of tuple")
+            logger.log(logging.INFO, "[DataManager] Converting dict data to list of tuple")
             for i in range(the_len):
                 temp_list = []
                 for j in dict_values_to_list:
@@ -203,7 +201,7 @@ class DataManager:
 
     def clear_data(self):
         """ Clear data """
-        logger.log(logging.DEBUG, "[DataManager] Clear data")
+        logger.log(logging.INFO, "[DataManager] Clear data")
         self.__fieldnames = []
         self.__data = {}
         self.__data_values_as_list_tuple = []
@@ -211,15 +209,15 @@ class DataManager:
     def refresh_data(self):
         """ Refresh data from the same data file """
         if self.__filename != "":
-            logger.log(logging.DEBUG, "[DataManager] Refresh data")
+            logger.log(logging.INFO, "[DataManager] Refresh data")
             self.clear_data()
             self.read_csv_file(self.__filename, self.__reading_options)
         else:
-            logger.log(logging.DEBUG, "[DataManager] Cannot refresh data because no data file is defined")
+            logger.log(logging.INFO, "[DataManager] Cannot refresh data because no data file is defined")
 
     def reset_manager(self):
         """ Reset the data manager """
-        logger.log(logging.DEBUG, "[DataManager] Reset data manager")
+        logger.log(logging.INFO, "[DataManager] Reset data manager")
         self.__filename = ""
         self.__reading_options = {}
         self.__fieldnames = []
@@ -240,9 +238,8 @@ def copy_and_adapt_data(data):
     list(float, int, ...)
         the copied and corrected data
     """
-    data_temp = data.copy()
     try:
-        data_temp = list(map(float, data_temp))
+        data_temp = list(map(float, data))
         return data_temp
     except ValueError:
         logger.log(logging.ERROR, "[DataManager] Error when converting data (string to number)")

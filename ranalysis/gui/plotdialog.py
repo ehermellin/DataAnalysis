@@ -30,7 +30,7 @@ class PlotDialog:
         self.__marker = marker
 
         top = self.top = tkinter.Toplevel(parent)
-        logger.log(logging.DEBUG, "[PlotDialog] Comparing two plots " + str(plot1) + " " + str(plot2))
+        logger.log(logging.INFO, "[PlotDialog] Comparing two plots " + str(plot1) + " " + str(plot2))
 
         top_frame = tkinter.Frame(top, borderwidth=2, relief=tkinter.GROOVE)
         top_frame.pack(side=tkinter.TOP, fill=tkinter.X, padx=10, pady=10)

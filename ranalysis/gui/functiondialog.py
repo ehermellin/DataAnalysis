@@ -78,7 +78,7 @@ class FunctionDialog:
 
     def create_plot_from_function(self):
         """ create plot from math functions """
-        logger.log(logging.DEBUG, "[FunctionDialog] Creating plot from math function " + self.__entry_function.get())
+        logger.log(logging.INFO, "[FunctionDialog] Creating plot from math function " + self.__entry_function.get())
         self.__plot = PlotCreator.get_instance().plot_from_function(self.__entry_function.get(),
                                                                     self.__entry_xmin.get(), self.__entry_xmax.get(),
                                                                     self.__entry_discr.get(), self.__entry_xlabel.get(),

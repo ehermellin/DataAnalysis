@@ -111,7 +111,7 @@ class PlotCreator:
         # find all words and check if all are allowed:
         for word in re.findall('[a-zA-Z_]+', string_function):
             if word not in self.__allowed_words:
-                logger.log(logging.DEBUG, "[PlotCreator] " + word + " is forbidden to use in math expression")
+                logger.log(logging.INFO, "[PlotCreator] " + word + " is forbidden to use in math expression")
                 raise ValueError(
                     '"{}" is forbidden to use in math expression'.format(word)
                 )
@@ -217,7 +217,7 @@ class PlotCreator:
         plot
             the plot
         """
-        logger.log(logging.DEBUG, "[PlotCreator] Plot from fieldnames")
+        logger.log(logging.INFO, "[PlotCreator] Plot from fieldnames")
         plot = self.__create_plot(data_manager.get_data_from_field_name(x_data_name),
                                   data_manager.get_data_from_field_name(y_data_name),
                                   x_data_name,
@@ -243,7 +243,7 @@ class PlotCreator:
         list(plot)
             the list of plots
         """
-        logger.log(logging.DEBUG, "[PlotCreator] Plot from multiple fieldnames")
+        logger.log(logging.INFO, "[PlotCreator] Plot from multiple fieldnames")
         plots_list = []
         for y_data_name in y_data_names:
             plot = self.__create_plot(data_manager.get_data_from_field_name(x_data_name),
@@ -278,7 +278,7 @@ class PlotCreator:
         plot
             the plot
         """
-        logger.log(logging.DEBUG, "[PlotCreator] Plot from data")
+        logger.log(logging.INFO, "[PlotCreator] Plot from data")
         plot = self.__create_plot(x_data, y_data, x_axis, y_axis, x_unit, y_unit)
         return plot
 
@@ -305,7 +305,7 @@ class PlotCreator:
         list(plot)
             the list of plot
         """
-        logger.log(logging.DEBUG, "[PlotCreator] Plot from multiple data")
+        logger.log(logging.INFO, "[PlotCreator] Plot from multiple data")
         plots_list = []
         for i in range(len(y_multiple_data)):
             plots_list.append(self.__create_plot(x_data, y_multiple_data[i], x_axis, y_multiple_axis[i],
@@ -320,7 +320,7 @@ class PlotCreator:
         data_manager :  DataManager
             the data manager associated to the data
         """
-        logger.log(logging.DEBUG, "[PlotCreator] Refresh plots data")
+        logger.log(logging.INFO, "[PlotCreator] Refresh plots data")
         for plot in self.__plots_dict.values():
             if plot.get_x_axis() in data_manager.get_field_names() \
                     and plot.get_y_axis() in data_manager.get_field_names():
@@ -353,5 +353,5 @@ class PlotCreator:
         plot = Plot(self.__counter, x_data, y_data, x_axis, y_axis, x_unit, y_unit)
         self.__plots_dict[self.__counter] = plot
         self.__counter += 1
-        logger.log(logging.DEBUG, "[PlotCreator] Create plot " + str(plot))
+        logger.log(logging.INFO, "[PlotCreator] Create plot " + str(plot))
         return plot

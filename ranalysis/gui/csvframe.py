@@ -82,13 +82,13 @@ class CsvFrame:
 
     def clear_data(self):
         """ Clear data in Treeview """
-        logger.log(logging.DEBUG, "[CsvFrame] Clear data in TreeView")
+        logger.log(logging.INFO, "[CsvFrame] Clear data in TreeView")
         for i in self.tree.get_children():
             self.tree.delete(i)
 
     def fill_data(self):
         """ Fill data in Treeview """
-        logger.log(logging.DEBUG, "[CsvFrame] Fill data in TreeView")
+        logger.log(logging.INFO, "[CsvFrame] Fill data in TreeView")
 
         self.clear_data()
 

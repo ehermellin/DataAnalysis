@@ -8,7 +8,14 @@ A python tools to display / plot data from csv files.
 -------------
 ### Dependencies
 
-Install Python 3.7+ and matplotlib library.
+Install Python 3.7+ with these libraries:
+ - matplotlib (3.3.1+)
+ - numpy (1.19.1+)
+ - re
+ - logging
+ - csv
+ - queue
+ - tkinter
 
 ### Data format
 
@@ -128,6 +135,9 @@ graph_from_plot_ids(ax, plot_ids, marker)
 graph_from_data(ax, x_data, y_data, x_label, y_label, marker)
 graph_from_multiple_data(ax, x_data, y_datas, x_label, y_multiple_label, marker)
 graph_add_title(ax, title)
+graph_compare_plot_from_fieldnames(ax, manager, x_fieldname, y_fieldnames, marker)
+graph_compare_plot_diff_from_fieldnames(ax, manager, x_fieldname, y_fieldnames, marker)
+graph_compare_plot_values_from_fieldnames(ax, manager, x_fieldname, y_fieldnames, marker)
 graph_compare_plot(ax, plot1, plot2, marker)
 graph_compare_plot_diff(ax, plot1, plot2)
 graph_compare_plot_values(ax, plot1, plot2)
@@ -148,4 +158,5 @@ cli_handler = CliHandler(file_path, options)
 cli_handler.show_from_function(function, xmin, xmax, discr, xlabel, ylabel)
 cli_handler.show_from_fieldname(x_fieldname, y_fieldname)
 cli_handler.show_from_fieldnames(x_fieldname, y_fieldnames)
+cli_handler.show_diff_from_fieldnames(x_fieldname, y_fieldnames, values)
 ```

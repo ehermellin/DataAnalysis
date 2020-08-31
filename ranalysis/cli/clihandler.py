@@ -11,7 +11,8 @@ from matplotlib import style
 
 from ranalysis.data.datamanager import DataManager
 from ranalysis.log.loghandler import logger, QueueHandler
-from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames, graph_from_function, graph_clear
+from ranalysis.plot.graph import graph_from_fieldname, graph_from_fieldnames, graph_from_function, graph_clear,\
+    graph_compare_plot_from_fieldnames, graph_compare_plot_values_from_fieldnames
 
 
 class CliHandler:
@@ -38,6 +39,8 @@ class CliHandler:
             show plot from data field name (x-axis and y-axis)
         show_from_fieldnames(x_fieldname, y_fieldnames)
             show plot from data field name (x-axis and multiple y-axis)
+        show_diff_from_fieldnames(x_fieldname, y_fieldnames, values=False):
+            show plot difference between two graph from fieldnames in a plt matplotlib object
         """
 
     def __init__(self, file_path, options=None):
@@ -70,7 +73,7 @@ class CliHandler:
         options : dict
             the options to read the csv file
         """
-        logger.log(logging.DEBUG, "[CliHandler] Read data from " + file_path)
+        logger.log(logging.INFO, "[CliHandler] Read data from " + file_path)
         if options is None:
             options = {'delimiter': ';', 'unit': 1}
 
@@ -96,7 +99,7 @@ class CliHandler:
         ylabel : str
             the name of the y label
         """
-        logger.log(logging.DEBUG, "[CliHandler] Plot function " + function)
+        logger.log(logging.INFO, "[CliHandler] Plot function " + function)
         fig, ax = plt.subplots()
         graph_clear(ax)
         graph_from_function(ax, function, xmin, xmax, discr, xlabel, ylabel)
@@ -113,13 +116,13 @@ class CliHandler:
             the fieldname of the y-axis variable to plot
         """
         if self.__data_manager is not None:
-            logger.log(logging.DEBUG, "[CliHandler] Show from field name " + x_fieldname + " " + y_fieldname)
+            logger.log(logging.INFO, "[CliHandler] Show from field name " + x_fieldname + " " + y_fieldname)
             fig, ax = plt.subplots()
             graph_clear(ax)
             graph_from_fieldname(ax, self.__data_manager, x_fieldname, y_fieldname)
             plt.show()
         else:
-            logger.log(logging.DEBUG, "[CliHandler] No data to show")
+            logger.log(logging.INFO, "[CliHandler] No data to show")
 
     def show_from_fieldnames(self, x_fieldname, y_fieldnames):
         """ Plot multiple data from fieldnames in a plt matplotlib object
@@ -132,10 +135,33 @@ class CliHandler:
             the list of fieldname of the y-axis variable to plot
         """
         if self.__data_manager is not None:
-            logger.log(logging.DEBUG, "[CliHandler] Show from field names " + x_fieldname + " " + str(y_fieldnames))
+            logger.log(logging.INFO, "[CliHandler] Show from field names " + x_fieldname + " " + str(y_fieldnames))
             fig, ax = plt.subplots()
             graph_clear(ax)
             graph_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
             plt.show()
         else:
-            logger.log(logging.DEBUG, "[CliHandler] No data to show")
+            logger.log(logging.INFO, "[CliHandler] No data to show")
+
+    def show_diff_from_fieldnames(self, x_fieldname, y_fieldnames, values=False):
+        """ Plot difference between two graph from fieldnames in a plt matplotlib object
+
+        Parameters
+        ----------
+        x_fieldname : str
+            the fieldname of the x-axis variable to plot
+        y_fieldnames : list(str)
+            the list of fieldname of the y-axis variable for the two plot to compare
+        values : boolean
+            display the diff values on the graph
+        """
+        if self.__data_manager is not None:
+            logger.log(logging.INFO, "[CliHandler] Show from field names " + x_fieldname + " " + str(y_fieldnames))
+            fig, ax = plt.subplots()
+            graph_clear(ax)
+            graph_compare_plot_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames)
+            if values:
+                graph_compare_plot_values_from_fieldnames(ax, self.__data_manager, x_fieldname, y_fieldnames, 0.1, True)
+            plt.show()
+        else:
+            logger.log(logging.INFO, "[CliHandler] No data to show")

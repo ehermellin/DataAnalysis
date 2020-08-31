@@ -353,13 +353,15 @@ def graph_compare_plot_values(ax, plot1, plot2, threshold, on_graph, round_value
         the number of decimal to use
     """
     logger.log(logging.INFO, "[Graph] Display compare values")
-    ymin = min(plot1.get_y())
     for ii in range(len(plot1.get_x())):
         value = abs(plot1.get_y()[ii] - plot2.get_y()[ii])
         if value > threshold:
-            y_pos = ymin * 0.99
+            y_pos = 0
             if on_graph:
                 y_pos = value
+            else:
+                if ii % 2 == 1:
+                    y_pos -= 0.40
 
             ax.text(plot1.get_x()[ii] - 0.1, y_pos, round(value, round_value), size=8)
 
